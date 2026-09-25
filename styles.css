@@ -413,5 +413,603 @@ main {
 }
 
 
-.panel-ic
+.panel-icon.green {
+    background: #e9f8f1;
+    color: #39aa78;
+}
+
+
+/* =========================================
+   DEVICE
+========================================= */
+
+.device-controls {
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    flex-wrap: wrap;
+}
+
+
+.connection-status {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    color: #858d99;
+
+    font-size: 13px;
+}
+
+
+.status-dot {
+    width: 9px;
+    height: 9px;
+
+    border-radius: 50%;
+
+    background: #c9ced6;
+
+    transition:
+        background .35s ease,
+        box-shadow .35s ease,
+        transform .35s ease;
+}
+
+
+.status-dot.connected {
+    background: #40b982;
+
+    box-shadow:
+        0 0 0 5px
+        rgba(64,185,130,.12);
+
+    transform:
+        scale(1.05);
+}
+
+
+/* =========================================
+   BUTTONS
+========================================= */
+
+.button {
+    border: 0;
+
+    border-radius: 11px;
+
+    padding:
+        11px 17px;
+
+    font-family: inherit;
+
+    font-size: 13px;
+
+    font-weight: 680;
+
+    cursor: pointer;
+
+    transition:
+        transform .18s
+        cubic-bezier(.2,.8,.2,1),
+
+        box-shadow .18s ease,
+
+        background .18s ease;
+}
+
+
+.button:hover {
+    transform:
+        translateY(-2px);
+}
+
+
+.button:active {
+    transform:
+        translateY(1px)
+        scale(.97);
+}
+
+
+.primary {
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #527dff,
+            #6a8aff
+        );
+
+    box-shadow:
+        0 7px 17px
+        rgba(82,125,255,.20);
+}
+
+
+.primary:hover {
+    box-shadow:
+        0 10px 23px
+        rgba(82,125,255,.27);
+}
+
+
+.secondary {
+    background:
+        #f1f3f6;
+
+    color:
+        #59616c;
+}
+
+
+.secondary:hover {
+    background:
+        #e9ecf0;
+}
+
+
+.run-button {
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #242932,
+            #353b45
+        );
+
+    box-shadow:
+        0 7px 16px
+        rgba(35,40,50,.13);
+}
+
+
+.run-button:hover {
+    box-shadow:
+        0 10px 22px
+        rgba(35,40,50,.18);
+}
+
+
+.run-button span {
+    margin-right: 6px;
+
+    font-size: 10px;
+}
+
+
+/* =========================================
+   WORKSPACE
+========================================= */
+
+.workspace {
+    min-height: 390px;
+
+    padding: 25px;
+
+    border-radius: 14px;
+
+    border:
+        1px solid #e7eaf0;
+
+    background-color:
+        #fafbfe;
+
+    background-image:
+        radial-gradient(
+            #dce2eb 1.05px,
+            transparent 1.05px
+        );
+
+    background-size:
+        22px 22px;
+
+    transition:
+        border-color .25s ease,
+        box-shadow .25s ease,
+        background-color .25s ease;
+}
+
+
+.workspace.drag-active {
+    border-color:
+        #a5baff;
+
+    background-color:
+        #f5f8ff;
+
+    box-shadow:
+        inset 0 0 0 2px
+        rgba(82,125,255,.07);
+}
+
+
+/* =========================================
+   BLOCKS
+========================================= */
+
+.block {
+    width: 315px;
+
+    min-height: 57px;
+
+    display: flex;
+
+    align-items: center;
+
+    padding:
+        12px 15px;
+
+    margin-bottom: 9px;
+
+    border-radius: 12px;
+
+    color: white;
+
+    cursor: grab;
+
+    user-select: none;
+
+    box-shadow:
+        0 7px 15px
+        rgba(40,50,70,.10);
+
+    transition:
+        transform .2s
+        cubic-bezier(.2,.8,.2,1),
+
+        box-shadow .2s ease,
+
+        filter .2s ease;
+}
+
+
+.block:hover {
+    transform:
+        translateX(5px)
+        translateY(-1px);
+
+    box-shadow:
+        0 11px 21px
+        rgba(40,50,70,.14);
+
+    filter:
+        brightness(1.025);
+}
+
+
+.block:active {
+    cursor: grabbing;
+
+    transform:
+        scale(.985);
+}
+
+
+.start-block {
+    background:
+        linear-gradient(
+            135deg,
+            #697feb,
+            #856be8
+        );
+}
+
+
+.blue-block {
+    background:
+        linear-gradient(
+            135deg,
+            #4f7fff,
+            #6190ff
+        );
+}
+
+
+.green-block {
+    background:
+        linear-gradient(
+            135deg,
+            #39ae7d,
+            #52c893
+        );
+}
+
+
+.orange-block {
+    background:
+        linear-gradient(
+            135deg,
+            #ed9147,
+            #f4a05b
+        );
+}
+
+
+.pink-block {
+    background:
+        linear-gradient(
+            135deg,
+            #df6593,
+            #eb79a2
+        );
+}
+
+
+.block-symbol {
+    width: 30px;
+    height: 30px;
+
+    flex:
+        0 0 30px;
+
+    display: grid;
+    place-items: center;
+
+    margin-right: 11px;
+
+    border-radius: 8px;
+
+    background:
+        rgba(255,255,255,.18);
+
+    font-size: 12px;
+}
+
+
+.block-content {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+
+.block-content strong {
+    font-size: 12px;
+
+    letter-spacing: .15px;
+}
+
+
+.block-content small {
+    font-size: 10px;
+
+    opacity: .73;
+
+    font-weight: 500;
+}
+
+
+/* =========================================
+   PROGRAM CONTROLS
+========================================= */
+
+.program-controls {
+    display: flex;
+
+    gap: 9px;
+
+    margin-top: 19px;
+}
+
+
+/* =========================================
+   CONSOLE
+========================================= */
+
+.console {
+    min-height: 90px;
+
+    padding:
+        14px 15px;
+
+    border-radius: 11px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fafbfc,
+            #f5f7f9
+        );
+
+    border:
+        1px solid #e7eaf0;
+
+    color:
+        #747d89;
+
+    font-family:
+        "SFMono-Regular",
+        Consolas,
+        monospace;
+
+    font-size: 12px;
+
+    line-height: 1.7;
+
+    white-space: pre-wrap;
+}
+
+
+.console-dot {
+    display: inline-block;
+
+    width: 7px;
+    height: 7px;
+
+    margin-right: 7px;
+
+    border-radius: 50%;
+
+    background:
+        #42b982;
+
+    vertical-align: 1px;
+}
+
+
+/* =========================================
+   FOOTER
+========================================= */
+
+footer {
+    padding:
+        0 20px 35px;
+
+    text-align: center;
+
+    color:
+        #a6adb7;
+
+    font-size: 11px;
+}
+
+
+/* =========================================
+   PAGE ANIMATIONS
+========================================= */
+
+@keyframes transitionOut {
+
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+
+@keyframes pageFadeIn {
+
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+
+@keyframes topbarIn {
+
+    0% {
+        opacity: 0;
+        transform:
+            translateY(-12px);
+    }
+
+    100% {
+        opacity: 1;
+        transform:
+            translateY(0);
+    }
+}
+
+
+@keyframes heroIn {
+
+    0% {
+        opacity: 0;
+
+        transform:
+            translateY(18px);
+
+        filter:
+            blur(4px);
+    }
+
+    100% {
+        opacity: 1;
+
+        transform:
+            translateY(0);
+
+        filter:
+            blur(0);
+    }
+}
+
+
+@keyframes panelIn {
+
+    0% {
+        opacity: 0;
+
+        transform:
+            translateY(16px);
+
+        filter:
+            blur(2px);
+    }
+
+    100% {
+        opacity: 1;
+
+        transform:
+            translateY(0);
+
+        filter:
+            blur(0);
+    }
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 650px) {
+
+    .topbar {
+        padding:
+            0 17px;
+    }
+
+
+    main {
+        width:
+            calc(100% - 24px);
+
+        margin-top:
+            32px;
+    }
+
+
+    .hero h1 {
+        font-size:
+            31px;
+    }
+
+
+    .panel {
+        padding:
+            18px;
+    }
+
+
+    .workspace {
+        padding:
+            16px;
+    }
+
+
+    .block {
+        width:
+            100%;
+    }
+
+}
 ```
