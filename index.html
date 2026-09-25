@@ -1,313 +1,587 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LoWorks — Prototype 01</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<title>LoWorks — Prototype 01</title>
 
-    body {
-      margin: 0;
-      background: #111;
-      color: #fff;
-      font-family: Arial, sans-serif;
-    }
+<style>
 
-    header {
-      height: 64px;
-      display: flex;
-      align-items: center;
-      padding: 0 24px;
-      border-bottom: 1px solid #292929;
-    }
+* {
+    box-sizing: border-box;
+}
 
-    .logo {
-      font-size: 22px;
-      font-weight: 700;
-    }
+body {
+    margin: 0;
+    background: #111;
+    color: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
 
-    .prototype {
-      margin-left: auto;
-      color: #888;
-      font-size: 14px;
-    }
+header {
+    height: 64px;
+    border-bottom: 1px solid #292929;
 
-    main {
-      max-width: 900px;
-      margin: 50px auto;
-      padding: 0 24px;
-    }
+    display: flex;
+    align-items: center;
 
-    h1 {
-      margin: 0 0 8px;
-      font-size: 32px;
-    }
+    padding: 0 24px;
+}
 
-    .description {
-      color: #888;
-      margin-bottom: 35px;
-    }
+.logo {
+    font-size: 21px;
+    font-weight: 700;
+}
 
-    .panel {
-      background: #181818;
-      border: 1px solid #292929;
-      border-radius: 12px;
-      padding: 22px;
-      margin-bottom: 18px;
-    }
+.version {
+    margin-left: auto;
+    color: #777;
+    font-size: 13px;
+}
 
-    .panel-title {
-      font-size: 14px;
-      color: #888;
-      margin-bottom: 15px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
+main {
+    max-width: 1000px;
+    margin: 45px auto;
+    padding: 0 25px;
+}
 
-    button {
-      background: #fff;
-      color: #111;
-      border: none;
-      border-radius: 8px;
-      padding: 12px 18px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      margin-right: 8px;
-    }
+h1 {
+    margin: 0;
+    font-size: 32px;
+}
 
-    button:hover {
-      background: #ddd;
-    }
+.subtitle {
+    color: #777;
+    margin-top: 8px;
+    margin-bottom: 35px;
+}
 
-    button.secondary {
-      background: #292929;
-      color: #fff;
-    }
+.panel {
+    background: #181818;
+    border: 1px solid #292929;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 18px;
+}
 
-    .status {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin-left: 12px;
-      color: #888;
-      font-size: 14px;
-    }
+.panel-title {
+    color: #777;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+}
 
-    .dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      background: #555;
-    }
+button {
+    border: none;
+    border-radius: 7px;
+    padding: 11px 17px;
 
-    .dot.connected {
-      background: #4caf50;
-    }
+    background: #fff;
+    color: #111;
 
-    .blocks {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
+    font-size: 14px;
+    font-weight: 600;
 
-    .block {
-      width: fit-content;
-      min-width: 250px;
-      padding: 14px 18px;
-      border-radius: 8px;
-      background: #252525;
-      border-left: 4px solid #777;
-      font-family: monospace;
-    }
+    cursor: pointer;
+}
 
-    .block.repeat {
-      border-left-color: #aaa;
-    }
+button:hover {
+    background: #ddd;
+}
 
-    .run-area {
-      margin-top: 20px;
-    }
+button.dark {
+    background: #292929;
+    color: #fff;
+}
 
-    #output {
-      margin-top: 18px;
-      background: #0b0b0b;
-      border-radius: 8px;
-      padding: 14px;
-      min-height: 90px;
-      font-family: monospace;
-      font-size: 13px;
-      color: #aaa;
-      white-space: pre-wrap;
-    }
-  </style>
+.status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    margin-left: 12px;
+
+    color: #777;
+    font-size: 13px;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+    background: #555;
+}
+
+.status-dot.connected {
+    background: #6bcf7f;
+}
+
+.workspace {
+    min-height: 350px;
+
+    background: #101010;
+
+    border: 1px solid #292929;
+    border-radius: 9px;
+
+    padding: 25px;
+}
+
+.block {
+    width: 290px;
+
+    background: #292929;
+
+    border-radius: 7px;
+
+    padding: 14px 17px;
+
+    margin-bottom: 8px;
+
+    font-family: monospace;
+    font-size: 14px;
+
+    cursor: grab;
+
+    border-left: 4px solid #888;
+}
+
+.block:hover {
+    background: #333;
+}
+
+.block.start {
+    border-left-color: #fff;
+}
+
+.block.control {
+    border-left-color: #aaa;
+}
+
+.block.action {
+    border-left-color: #777;
+}
+
+.workspace-empty {
+    color: #555;
+    font-size: 13px;
+    margin-top: 20px;
+}
+
+.controls {
+    margin-top: 20px;
+}
+
+#console {
+    background: #0b0b0b;
+
+    border-radius: 7px;
+
+    padding: 14px;
+
+    min-height: 100px;
+
+    color: #777;
+
+    font-family: monospace;
+    font-size: 13px;
+
+    white-space: pre-wrap;
+}
+
+</style>
 </head>
 
 <body>
 
 <header>
-  <div class="logo">LoWorks</div>
-  <div class="prototype">Prototype 01</div>
+
+    <div class="logo">
+        LoWorks
+    </div>
+
+    <div class="version">
+        Prototype 01
+    </div>
+
 </header>
+
 
 <main>
 
-  <h1>Prototype 01</h1>
-  <div class="description">
-    Browser-based Arduino programming.
-  </div>
+    <h1>Prototype 01</h1>
 
-  <div class="panel">
-    <div class="panel-title">Device</div>
+    <div class="subtitle">
+        Browser-based hardware programming
+    </div>
 
-    <button id="connectButton">
-      Connect Arduino
-    </button>
 
-    <span class="status">
-      <span id="statusDot" class="dot"></span>
-      <span id="statusText">Not connected</span>
-    </span>
-  </div>
+    <!-- DEVICE -->
 
-  <div class="panel">
+    <div class="panel">
 
-    <div class="panel-title">Program</div>
+        <div class="panel-title">
+            Device
+        </div>
 
-    <div class="blocks">
+        <button id="connect">
+            Connect Arduino
+        </button>
 
-      <div class="block">
-        SET BUILT-IN LED → ON
-      </div>
+        <div class="status">
 
-      <div class="block">
-        WAIT → 500 ms
-      </div>
+            <div id="statusDot" class="status-dot"></div>
 
-      <div class="block">
-        SET BUILT-IN LED → OFF
-      </div>
+            <span id="statusText">
+                Not connected
+            </span>
 
-      <div class="block">
-        WAIT → 500 ms
-      </div>
-
-      <div class="block repeat">
-        REPEAT FOREVER
-      </div>
+        </div>
 
     </div>
 
-    <div class="run-area">
-      <button id="runButton">
-        Run
-      </button>
 
-      <button id="stopButton" class="secondary">
-        Stop
-      </button>
+    <!-- PROGRAM -->
+
+    <div class="panel">
+
+        <div class="panel-title">
+            Program
+        </div>
+
+
+        <div id="workspace" class="workspace">
+
+            <div
+                class="block start"
+                draggable="true"
+                data-command="START"
+            >
+                WHEN PROGRAM STARTS
+            </div>
+
+
+            <div
+                class="block action"
+                draggable="true"
+                data-command="LED_ON"
+            >
+                SET LED → ON
+            </div>
+
+
+            <div
+                class="block action"
+                draggable="true"
+                data-command="WAIT 500"
+            >
+                WAIT → 500 ms
+            </div>
+
+
+            <div
+                class="block action"
+                draggable="true"
+                data-command="LED_OFF"
+            >
+                SET LED → OFF
+            </div>
+
+
+            <div
+                class="block control"
+                draggable="true"
+                data-command="REPEAT"
+            >
+                REPEAT FOREVER
+            </div>
+
+
+            <div class="workspace-empty">
+                Drag blocks here to build your program.
+            </div>
+
+        </div>
+
+
+        <div class="controls">
+
+            <button id="run">
+                Run
+            </button>
+
+            <button id="stop" class="dark">
+                Stop
+            </button>
+
+        </div>
+
     </div>
 
-    <div id="output">Waiting...</div>
 
-  </div>
+    <!-- CONSOLE -->
+
+    <div class="panel">
+
+        <div class="panel-title">
+            Console
+        </div>
+
+        <div id="console">
+            LoWorks ready.
+        </div>
+
+    </div>
 
 </main>
+
 
 <script>
 
 let port = null;
 let writer = null;
 
-const connectButton = document.getElementById("connectButton");
-const runButton = document.getElementById("runButton");
-const stopButton = document.getElementById("stopButton");
 
-const statusText = document.getElementById("statusText");
-const statusDot = document.getElementById("statusDot");
-const output = document.getElementById("output");
+/* -------------------------
+   UI
+------------------------- */
 
-function log(message) {
-  output.textContent = message;
+const connectButton =
+    document.getElementById("connect");
+
+const runButton =
+    document.getElementById("run");
+
+const stopButton =
+    document.getElementById("stop");
+
+const statusText =
+    document.getElementById("statusText");
+
+const statusDot =
+    document.getElementById("statusDot");
+
+const consoleBox =
+    document.getElementById("console");
+
+
+function log(text) {
+
+    consoleBox.textContent = text;
+
 }
+
+
+/* -------------------------
+   SERIAL
+------------------------- */
 
 async function connectArduino() {
 
-  if (!("serial" in navigator)) {
-    log("Web Serial is not supported in this browser.");
-    return;
-  }
+    if (!("serial" in navigator)) {
 
-  try {
+        log(
+            "Web Serial is not supported in this browser."
+        );
 
-    port = await navigator.serial.requestPort();
+        return;
+    }
 
-    await port.open({
-      baudRate: 115200
-    });
 
-    writer = port.writable.getWriter();
+    try {
 
-    statusText.textContent = "Connected";
-    statusDot.classList.add("connected");
+        port =
+            await navigator.serial.requestPort();
 
-    log("Arduino connected.\nReady to run.");
 
-  } catch (error) {
+        await port.open({
+            baudRate: 115200
+        });
 
-    console.error(error);
 
-    log("Connection failed:\n" + error);
+        writer =
+            port.writable.getWriter();
 
-  }
+
+        statusText.textContent =
+            "Connected";
+
+        statusDot.classList.add(
+            "connected"
+        );
+
+
+        log(
+            "Arduino connected.\n\nLoWorks is ready."
+        );
+
+    }
+
+    catch(error) {
+
+        console.error(error);
+
+        log(
+            "Connection failed:\n\n" +
+            error.message
+        );
+
+    }
+
 }
+
+
+/* -------------------------
+   SEND COMMAND
+------------------------- */
 
 async function send(command) {
 
-  if (!writer) {
-    log("Connect the Arduino first.");
-    return;
-  }
+    if (!writer) {
 
-  const data = new TextEncoder().encode(command + "\n");
+        log(
+            "Connect your Arduino first."
+        );
 
-  await writer.write(data);
+        return;
+    }
+
+
+    const data =
+        new TextEncoder().encode(
+            command + "\n"
+        );
+
+
+    await writer.write(data);
+
 }
+
+
+/* -------------------------
+   RUN
+------------------------- */
 
 async function runProgram() {
 
-  if (!writer) {
-    log("Connect the Arduino first.");
-    return;
-  }
+    if (!writer) {
 
-  log("Running LoWorks program...");
+        log(
+            "Connect your Arduino first."
+        );
 
-  await send("RUN");
+        return;
+    }
+
+
+    log(
+        "Running LoWorks program..."
+    );
+
+
+    await send("RUN");
 
 }
+
+
+/* -------------------------
+   STOP
+------------------------- */
 
 async function stopProgram() {
 
-  if (!writer) {
-    return;
-  }
+    if (!writer) {
 
-  await send("STOP");
+        return;
+    }
 
-  log("Program stopped.");
+
+    await send("STOP");
+
+
+    log(
+        "Program stopped."
+    );
 
 }
 
-connectButton.addEventListener("click", connectArduino);
 
-runButton.addEventListener("click", runProgram);
+/* -------------------------
+   BUTTONS
+------------------------- */
 
-stopButton.addEventListener("click", stopProgram);
+connectButton.onclick =
+    connectArduino;
+
+runButton.onclick =
+    runProgram;
+
+stopButton.onclick =
+    stopProgram;
+
+
+/* -------------------------
+   BLOCK DRAGGING
+------------------------- */
+
+const blocks =
+    document.querySelectorAll(".block");
+
+
+blocks.forEach(block => {
+
+    block.addEventListener(
+        "dragstart",
+        event => {
+
+            event.dataTransfer.setData(
+                "text/plain",
+                block.dataset.command
+            );
+
+        }
+    );
+
+});
+
+
+const workspace =
+    document.getElementById("workspace");
+
+
+workspace.addEventListener(
+    "dragover",
+    event => {
+
+        event.preventDefault();
+
+    }
+);
+
+
+workspace.addEventListener(
+    "drop",
+    event => {
+
+        event.preventDefault();
+
+        const command =
+            event.dataTransfer.getData(
+                "text/plain"
+            );
+
+        if (!command) return;
+
+        log(
+            "Block selected:\n" +
+            command
+        );
+
+    }
+);
 
 </script>
 
