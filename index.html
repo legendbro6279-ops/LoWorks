@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>LoWorks — Prototype 01</title>
 
     <style>
@@ -12,25 +13,28 @@
 
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
             background: #111;
             color: #eee;
+            font-family: Arial, sans-serif;
         }
 
         header {
-            padding: 18px 24px;
-            border-bottom: 1px solid #333;
+            height: 60px;
+            padding: 0 24px;
             display: flex;
+            align-items: center;
             justify-content: space-between;
+            border-bottom: 1px solid #333;
         }
 
-        h1 {
+        header h1 {
             margin: 0;
             font-size: 22px;
         }
 
         .prototype {
             color: #888;
+            font-size: 14px;
         }
 
         main {
@@ -47,11 +51,11 @@
             overflow: hidden;
         }
 
-        .section-title {
+        .title {
             padding: 12px 16px;
             border-bottom: 1px solid #333;
-            font-size: 14px;
             color: #aaa;
+            font-size: 13px;
         }
 
         .content {
@@ -61,7 +65,7 @@
         button {
             background: #eee;
             color: #111;
-            border: 0;
+            border: none;
             border-radius: 5px;
             padding: 10px 16px;
             cursor: pointer;
@@ -72,15 +76,27 @@
             background: #ccc;
         }
 
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
         #status {
             margin-top: 12px;
             color: #888;
         }
 
+        #status.connected {
+            color: #7ee787;
+        }
+
+        #status.error {
+            color: #ff7b72;
+        }
+
         textarea {
             width: 100%;
-            min-height: 300px;
-            resize: vertical;
+            min-height: 320px;
             background: #0d0d0d;
             color: #ddd;
             border: 1px solid #333;
@@ -88,17 +104,12 @@
             padding: 15px;
             font-family: monospace;
             font-size: 14px;
+            resize: vertical;
+            outline: none;
         }
 
-        #serial {
-            background: #0d0d0d;
-            border: 1px solid #333;
-            border-radius: 5px;
-            padding: 15px;
-            min-height: 120px;
-            font-family: monospace;
-            white-space: pre-wrap;
-            color: #aaa;
+        textarea:focus {
+            border-color: #666;
         }
 
         .controls {
@@ -107,12 +118,15 @@
             margin-top: 15px;
         }
 
-        .connected {
-            color: #7ee787 !important;
-        }
-
-        .error {
-            color: #ff7b72 !important;
+        #serial {
+            min-height: 150px;
+            background: #0d0d0d;
+            border: 1px solid #333;
+            border-radius: 5px;
+            padding: 15px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            color: #aaa;
         }
     </style>
 </head>
@@ -126,10 +140,13 @@
 
 <main>
 
+    <!-- DEVICE -->
+
     <section>
-        <div class="section-title">DEVICE</div>
+        <div class="title">DEVICE</div>
 
         <div class="content">
+
             <button id="connectButton">
                 Connect Arduino
             </button>
@@ -137,39 +154,58 @@
             <div id="status">
                 USB: Not connected
             </div>
+
         </div>
     </section>
 
 
+    <!-- CODE -->
+
     <section>
-        <div class="section-title">CODE</div>
+
+        <div class="title">CODE</div>
 
         <div class="content">
 
 <textarea id="code">void setup() {
-  pinMode(13, OUTPUT);
+  pinMode(LED_BUILTIN, OUTPUT);
 }
 
 void loop() {
-  digitalWrite(13, HIGH);
+  digitalWrite(LED_BUILTIN, HIGH);
+  delay(500);
+
+  digitalWrite(LED_BUILTIN, LOW);
+  delay(500);
 }</textarea>
 
             <div class="controls">
+
                 <button id="uploadButton">
                     Upload to Board
                 </button>
+
             </div>
 
         </div>
+
     </section>
 
 
+    <!-- SERIAL -->
+
     <section>
-        <div class="section-title">SERIAL</div>
+
+        <div class="title">SERIAL</div>
 
         <div class="content">
-            <div id="serial">LoWorks ready.</div>
+
+            <div id="serial">
+LoWorks ready.
+            </div>
+
         </div>
+
     </section>
 
 </main>
@@ -180,18 +216,32 @@ void loop() {
 let port = null;
 let reader = null;
 
-const connectButton = document.getElementById("connectButton");
-const uploadButton = document.getElementById("uploadButton");
-const status = document.getElementById("status");
-const serial = document.getElementById("serial");
+const connectButton =
+    document.getElementById("connectButton");
 
+const uploadButton =
+    document.getElementById("uploadButton");
+
+const status =
+    document.getElementById("status");
+
+const serial =
+    document.getElementById("serial");
+
+
+// --------------------------------
+// CONNECT TO ARDUINO
+// --------------------------------
 
 connectButton.addEventListener("click", async () => {
 
     if (!("serial" in navigator)) {
+
         status.textContent =
             "Web Serial is not supported. Use Chrome or Edge.";
+
         status.className = "error";
+
         return;
     }
 
@@ -205,14 +255,18 @@ connectButton.addEventListener("click", async () => {
 
         status.textContent =
             "USB: Connected";
+
         status.className = "connected";
 
         serial.textContent =
             "LoWorks connected to Arduino.\n";
 
-        readSerial();
+        connectButton.textContent =
+            "Arduino Connected";
 
-    } catch (error) {
+    }
+
+    catch (error) {
 
         console.error(error);
 
@@ -220,60 +274,93 @@ connectButton.addEventListener("click", async () => {
             "USB: Connection failed";
 
         status.className = "error";
+
     }
 
 });
 
 
-async function readSerial() {
+// --------------------------------
+// UPLOAD
+// --------------------------------
 
-    const decoder = new TextDecoderStream();
+uploadButton.addEventListener("click", async () => {
 
-    port.readable.pipeTo(decoder.writable);
+    const code =
+        document.getElementById("code").value;
 
-    reader = decoder.readable.getReader();
+    serial.textContent =
+        "LoWorks Engine: compiling...\n";
+
+    uploadButton.disabled = true;
 
     try {
 
-        while (true) {
+        const response = await fetch(
+            "http://127.0.0.1:8765/upload",
+            {
+                method: "POST",
 
-            const { value, done } =
-                await reader.read();
+                headers: {
+                    "Content-Type": "application/json"
+                },
 
-            if (done) break;
-
-            if (value) {
-                serial.textContent += value;
+                body: JSON.stringify({
+                    code: code
+                })
             }
+        );
+
+        const result =
+            await response.json();
+
+
+        if (result.success) {
+
+            serial.textContent +=
+                "Compilation successful.\n";
+
+            serial.textContent +=
+                "Arduino detected.\n";
+
+            serial.textContent +=
+                "Uploading...\n";
+
+            serial.textContent +=
+                "Upload complete.\n";
+
+            serial.textContent +=
+                "Port: " + result.port;
+
         }
 
-    } catch (error) {
+        else {
+
+            serial.textContent +=
+                "\nERROR\n";
+
+            serial.textContent +=
+                result.error || "Unknown error";
+
+        }
+
+    }
+
+    catch (error) {
+
+        serial.textContent +=
+            "\nCould not connect to LoWorks Engine.\n";
+
+        serial.textContent +=
+            "Make sure the LoWorks Engine is running.";
 
         console.error(error);
 
     }
 
-}
-
-
-uploadButton.addEventListener("click", () => {
-
-    if (!port) {
-
-        serial.textContent +=
-            "\nERROR: Connect an Arduino first.";
-
-        return;
-    }
-
-    serial.textContent +=
-        "\nLoWorks: Preparing upload...\n";
-
-    serial.textContent +=
-        "Upload system coming next.";
+    uploadButton.disabled = false;
 
 });
-
 
 </script>
 
