@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LoWorks — Prototype 01</title>
+</head>
+
+<body>
+    <h1>LoWorks</h1>
+    <h2>Prototype 01</h2>
+
+    <p>Hardware connection test</p>
+
+    <button id="connect">Connect to Prototype 01</button>
+
+    <p id="status">Not connected</p>
+
+    <script>
+        const connectButton = document.getElementById("connect");
+        const status = document.getElementById("status");
+
+        connectButton.onclick = async () => {
+            try {
+                const port = await navigator.serial.requestPort();
+                await port.open({ baudRate: 115200 });
+
+                status.textContent = "Connected to Prototype 01";
+            } catch (error) {
+                status.textContent = "Connection cancelled or failed";
+                console.error(error);
+            }
+        };
+    </script>
+</body>
+</html>
