@@ -1,7 +1,6 @@
 ```html
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,6 +12,8 @@
 
 <body>
 
+<div id="pageTransition"></div>
+
 <header class="topbar">
 
     <div class="brand">
@@ -21,7 +22,7 @@
             <span></span>
         </div>
 
-        <span>LoWorks</span>
+        <span class="brand-name">LoWorks</span>
 
     </div>
 
@@ -37,7 +38,7 @@
     <section class="hero">
 
         <div class="hero-eyebrow">
-            HARDWARE PROGRAMMING
+            LOWORKS HARDWARE
         </div>
 
         <h1>
@@ -45,7 +46,7 @@
         </h1>
 
         <p>
-            Program your hardware without leaving LoWorks.
+            A simple, playful way to program your hardware.
         </p>
 
     </section>
@@ -53,7 +54,7 @@
 
     <!-- DEVICE -->
 
-    <section class="panel device-panel">
+    <section class="panel">
 
         <div class="panel-header">
 
@@ -62,11 +63,8 @@
             </div>
 
             <div>
-
                 <h2>Device</h2>
-
                 <p>Connect your Arduino to LoWorks.</p>
-
             </div>
 
         </div>
@@ -111,13 +109,8 @@
             </div>
 
             <div>
-
                 <h2>Program</h2>
-
-                <p>
-                    Build your program with LoWorks blocks.
-                </p>
-
+                <p>Build your program with LoWorks blocks.</p>
             </div>
 
         </div>
@@ -265,7 +258,6 @@
                 Run
             </button>
 
-
             <button
                 id="stopButton"
                 class="button secondary"
@@ -280,7 +272,7 @@
 
     <!-- CONSOLE -->
 
-    <section class="panel console-panel">
+    <section class="panel">
 
         <div class="panel-header">
 
@@ -289,13 +281,8 @@
             </div>
 
             <div>
-
                 <h2>Console</h2>
-
-                <p>
-                    LoWorks system messages.
-                </p>
-
+                <p>LoWorks system messages.</p>
             </div>
 
         </div>
@@ -305,7 +292,6 @@
             id="console"
             class="console"
         >
-            <span class="console-dot"></span>
             LoWorks is ready.
         </div>
 
@@ -324,3 +310,1350 @@
 </body>
 </html>
 ```
+
+### `style.css`
+
+```css
+* {
+    box-sizing: border-box;
+}
+
+html {
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+
+    background:
+        radial-gradient(
+            circle at 50% -10%,
+            #f0f5ff 0%,
+            #ffffff 38%
+        );
+
+    color: #20242b;
+
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Inter,
+        Arial,
+        sans-serif;
+
+    -webkit-font-smoothing: antialiased;
+
+    opacity: 0;
+
+    animation:
+        pageFadeIn 0.9s cubic-bezier(.2,.8,.2,1)
+        forwards;
+}
+
+
+/* =================================
+   PAGE TRANSITION
+================================= */
+
+#pageTransition {
+    position: fixed;
+
+    inset: 0;
+
+    background: #ffffff;
+
+    z-index: 9999;
+
+    pointer-events: none;
+
+    animation:
+        transitionOut 1.05s
+        cubic-bezier(.77,0,.18,1)
+        forwards;
+}
+
+
+/* =================================
+   TOP BAR
+================================= */
+
+.topbar {
+    height: 70px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 30px;
+
+    background:
+        rgba(255,255,255,0.78);
+
+    border-bottom:
+        1px solid rgba(225,229,236,0.75);
+
+    backdrop-filter:
+        blur(20px);
+
+    -webkit-backdrop-filter:
+        blur(20px);
+
+    position: sticky;
+    top: 0;
+
+    z-index: 50;
+
+    animation:
+        topbarIn .8s
+        .1s cubic-bezier(.2,.8,.2,1)
+        both;
+}
+
+
+.brand {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    font-size: 21px;
+
+    font-weight: 750;
+
+    letter-spacing: -0.5px;
+}
+
+
+.logo-mark {
+    width: 31px;
+    height: 31px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #5b82ff,
+            #9671ed
+        );
+
+    box-shadow:
+        0 7px 17px
+        rgba(91,130,255,.20);
+}
+
+
+.logo-mark span {
+    width: 9px;
+    height: 9px;
+
+    border-radius: 3px;
+
+    background: white;
+
+    box-shadow:
+        0 0 0 2px
+        rgba(255,255,255,.25);
+}
+
+
+.prototype-badge {
+    margin-left: auto;
+
+    padding: 7px 12px;
+
+    border-radius: 9px;
+
+    background:
+        rgba(245,247,250,.9);
+
+    border:
+        1px solid #e7eaf0;
+
+    color: #7d8490;
+
+    font-size: 12px;
+
+    transition:
+        transform .2s ease,
+        background .2s ease;
+}
+
+
+.prototype-badge:hover {
+    transform: translateY(-1px);
+
+    background: #f0f3f7;
+}
+
+
+/* =================================
+   MAIN
+================================= */
+
+main {
+    width:
+        min(
+            1060px,
+            calc(100% - 40px)
+        );
+
+    margin:
+        54px auto 80px;
+}
+
+
+/* =================================
+   HERO
+================================= */
+
+.hero {
+    margin-bottom: 34px;
+
+    animation:
+        heroIn .8s
+        .18s cubic-bezier(.2,.8,.2,1)
+        both;
+}
+
+
+.hero-eyebrow {
+    color: #6081e8;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.5px;
+
+    margin-bottom: 10px;
+}
+
+
+.hero h1 {
+    margin: 0;
+
+    font-size: 40px;
+
+    line-height: 1.08;
+
+    letter-spacing: -1.7px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #222832,
+            #6877a0
+        );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    -webkit-text-fill-color: transparent;
+}
+
+
+.hero p {
+    margin:
+        11px 0 0;
+
+    color: #7e8794;
+
+    font-size: 15px;
+}
+
+
+/* =================================
+   PANELS
+================================= */
+
+.panel {
+    padding: 23px;
+
+    margin-bottom: 18px;
+
+    background:
+        rgba(255,255,255,.84);
+
+    border:
+        1px solid
+        rgba(224,228,235,.9);
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 16px 40px
+        rgba(36,48,70,.055),
+
+        0 2px 8px
+        rgba(36,48,70,.035);
+
+    backdrop-filter:
+        blur(18px);
+
+    -webkit-backdrop-filter:
+        blur(18px);
+
+    animation:
+        panelIn .7s
+        cubic-bezier(.2,.8,.2,1)
+        both;
+
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease;
+}
+
+
+.panel:nth-of-type(2) {
+    animation-delay: .08s;
+}
+
+
+.panel:nth-of-type(3) {
+    animation-delay: .15s;
+}
+
+
+.panel:hover {
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 20px 45px
+        rgba(36,48,70,.075),
+
+        0 3px 9px
+        rgba(36,48,70,.04);
+}
+
+
+.panel-header {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    margin-bottom: 19px;
+}
+
+
+.panel-header h2 {
+    margin: 0;
+
+    font-size: 14px;
+
+    font-weight: 730;
+}
+
+
+.panel-header p {
+    margin:
+        3px 0 0;
+
+    color: #89919d;
+
+    font-size: 12px;
+}
+
+
+.panel-icon {
+    width: 36px;
+    height: 36px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 10px;
+
+    font-size: 8px;
+
+    font-weight: 850;
+
+    letter-spacing: .5px;
+}
+
+
+.panel-icon.blue {
+    background: #edf2ff;
+    color: #5b7ff0;
+}
+
+
+.panel-icon.purple {
+    background: #f1ecff;
+    color: #8965df;
+}
+
+
+.panel-icon.green {
+    background: #e9f8f1;
+    color: #39aa78;
+}
+
+
+/* =================================
+   DEVICE
+================================= */
+
+.device-controls {
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    flex-wrap: wrap;
+}
+
+
+.connection-status {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    color: #858d99;
+
+    font-size: 13px;
+}
+
+
+.status-dot {
+    width: 9px;
+    height: 9px;
+
+    border-radius: 50%;
+
+    background: #c9ced6;
+
+    transition:
+        background .35s ease,
+        box-shadow .35s ease,
+        transform .35s ease;
+}
+
+
+.status-dot.connected {
+    background: #40b982;
+
+    box-shadow:
+        0 0 0 5px
+        rgba(64,185,130,.12);
+
+    transform: scale(1.05);
+}
+
+
+/* =================================
+   BUTTONS
+================================= */
+
+.button {
+    border: 0;
+
+    border-radius: 11px;
+
+    padding:
+        11px 17px;
+
+    font-family: inherit;
+
+    font-size: 13px;
+
+    font-weight: 680;
+
+    cursor: pointer;
+
+    transition:
+        transform .18s
+        cubic-bezier(.2,.8,.2,1),
+
+        box-shadow .18s ease,
+
+        background .18s ease;
+}
+
+
+.button:hover {
+    transform:
+        translateY(-2px);
+}
+
+
+.button:active {
+    transform:
+        translateY(1px)
+        scale(.97);
+}
+
+
+.primary {
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #527dff,
+            #6a8aff
+        );
+
+    box-shadow:
+        0 7px 17px
+        rgba(82,125,255,.20);
+}
+
+
+.primary:hover {
+    box-shadow:
+        0 10px 23px
+        rgba(82,125,255,.27);
+}
+
+
+.secondary {
+    background: #f1f3f6;
+
+    color: #59616c;
+}
+
+
+.secondary:hover {
+    background: #e9ecf0;
+}
+
+
+.run-button {
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #242932,
+            #353b45
+        );
+
+    box-shadow:
+        0 7px 16px
+        rgba(35,40,50,.13);
+}
+
+
+.run-button:hover {
+    box-shadow:
+        0 10px 22px
+        rgba(35,40,50,.18);
+}
+
+
+.run-button span {
+    margin-right: 6px;
+
+    font-size: 10px;
+}
+
+
+/* =================================
+   WORKSPACE
+================================= */
+
+.workspace {
+    min-height: 390px;
+
+    padding: 25px;
+
+    border-radius: 14px;
+
+    border:
+        1px solid #e7eaf0;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fafbfe,
+            #f7f9fc
+        );
+
+    background-image:
+        radial-gradient(
+            #dce2eb 1.05px,
+            transparent 1.05px
+        );
+
+    background-size:
+        22px 22px;
+
+    transition:
+        border-color .25s ease,
+        box-shadow .25s ease,
+        background-color .25s ease;
+}
+
+
+.workspace.drag-active {
+    border-color:
+        #a5baff;
+
+    background-color:
+        #f5f8ff;
+
+    box-shadow:
+        inset 0 0 0 2px
+        rgba(82,125,255,.07);
+}
+
+
+/* =================================
+   BLOCKS
+================================= */
+
+.block {
+    width: 315px;
+
+    min-height: 57px;
+
+    display: flex;
+
+    align-items: center;
+
+    padding:
+        12px 15px;
+
+    margin-bottom: 9px;
+
+    border-radius: 12px;
+
+    color: white;
+
+    cursor: grab;
+
+    user-select: none;
+
+    box-shadow:
+        0 7px 15px
+        rgba(40,50,70,.10);
+
+    transition:
+        transform .2s
+        cubic-bezier(.2,.8,.2,1),
+
+        box-shadow .2s ease,
+
+        filter .2s ease;
+}
+
+
+.block:hover {
+    transform:
+        translateX(5px)
+        translateY(-1px);
+
+    box-shadow:
+        0 11px 21px
+        rgba(40,50,70,.14);
+
+    filter: brightness(1.025);
+}
+
+
+.block:active {
+    cursor: grabbing;
+
+    transform:
+        scale(.985);
+}
+
+
+.start-block {
+    background:
+        linear-gradient(
+            135deg,
+            #697feb,
+            #856be8
+        );
+}
+
+
+.blue-block {
+    background:
+        linear-gradient(
+            135deg,
+            #4f7fff,
+            #6190ff
+        );
+}
+
+
+.green-block {
+    background:
+        linear-gradient(
+            135deg,
+            #39ae7d,
+            #52c893
+        );
+}
+
+
+.orange-block {
+    background:
+        linear-gradient(
+            135deg,
+            #ed9147,
+            #f4a05b
+        );
+}
+
+
+.pink-block {
+    background:
+        linear-gradient(
+            135deg,
+            #df6593,
+            #eb79a2
+        );
+}
+
+
+.block-symbol {
+    width: 30px;
+    height: 30px;
+
+    flex:
+        0 0 30px;
+
+    display: grid;
+    place-items: center;
+
+    margin-right: 11px;
+
+    border-radius: 8px;
+
+    background:
+        rgba(255,255,255,.18);
+
+    font-size: 12px;
+}
+
+
+.block-content {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+
+.block-content strong {
+    font-size: 12px;
+
+    letter-spacing: .15px;
+}
+
+
+.block-content small {
+    font-size: 10px;
+
+    opacity: .73;
+
+    font-weight: 500;
+}
+
+
+/* =================================
+   PROGRAM CONTROLS
+================================= */
+
+.program-controls {
+    display: flex;
+
+    gap: 9px;
+
+    margin-top: 19px;
+}
+
+
+/* =================================
+   CONSOLE
+================================= */
+
+.console {
+    min-height: 90px;
+
+    padding: 14px 15px;
+
+    border-radius: 11px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fafbfc,
+            #f5f7f9
+        );
+
+    border:
+        1px solid #e7eaf0;
+
+    color: #747d89;
+
+    font-family:
+        "SFMono-Regular",
+        Consolas,
+        monospace;
+
+    font-size: 12px;
+
+    line-height: 1.7;
+
+    white-space: pre-wrap;
+}
+
+
+.console-dot {
+    display: inline-block;
+
+    width: 7px;
+    height: 7px;
+
+    margin-right: 7px;
+
+    border-radius: 50%;
+
+    background: #42b982;
+
+    vertical-align: 1px;
+}
+
+
+/* =================================
+   FOOTER
+================================= */
+
+footer {
+    padding:
+        0 20px 35px;
+
+    text-align: center;
+
+    color: #a6adb7;
+
+    font-size: 11px;
+}
+
+
+/* =================================
+   ANIMATIONS
+================================= */
+
+@keyframes transitionOut {
+
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+
+@keyframes pageFadeIn {
+
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+
+@keyframes topbarIn {
+
+    0% {
+        opacity: 0;
+        transform: translateY(-12px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+@keyframes heroIn {
+
+    0% {
+        opacity: 0;
+        transform: translateY(18px);
+        filter: blur(4px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+    }
+}
+
+
+@keyframes panelIn {
+
+    0% {
+        opacity: 0;
+        transform: translateY(16px);
+        filter: blur(2px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+    }
+}
+
+
+/* =================================
+   MOBILE
+================================= */
+
+@media (max-width: 650px) {
+
+    .topbar {
+        padding: 0 17px;
+    }
+
+
+    main {
+        width:
+            calc(100% - 24px);
+
+        margin-top: 32px;
+    }
+
+
+    .hero h1 {
+        font-size: 31px;
+    }
+
+
+    .panel {
+        padding: 18px;
+    }
+
+
+    .workspace {
+        padding: 16px;
+    }
+
+
+    .block {
+        width: 100%;
+    }
+
+}
+```
+
+### `script.js`
+
+```javascript
+/* =========================================
+   LoWorks — Prototype 01
+========================================= */
+
+
+let port = null;
+let writer = null;
+
+
+/* =========================================
+   ELEMENTS
+========================================= */
+
+const connectButton =
+    document.getElementById("connectButton");
+
+const runButton =
+    document.getElementById("runButton");
+
+const stopButton =
+    document.getElementById("stopButton");
+
+const statusText =
+    document.getElementById("statusText");
+
+const statusDot =
+    document.getElementById("statusDot");
+
+const consoleBox =
+    document.getElementById("console");
+
+const workspace =
+    document.getElementById("workspace");
+
+const blocks =
+    document.querySelectorAll(".block");
+
+
+/* =========================================
+   CONSOLE
+========================================= */
+
+function log(message) {
+
+    consoleBox.innerHTML = "";
+
+    const dot =
+        document.createElement("span");
+
+    dot.className =
+        "console-dot";
+
+    consoleBox.appendChild(dot);
+
+    consoleBox.appendChild(
+        document.createTextNode(message)
+    );
+
+}
+
+
+/* =========================================
+   CONNECT
+========================================= */
+
+async function connectArduino() {
+
+    if (!("serial" in navigator)) {
+
+        log(
+            "Web Serial is not available in this browser."
+        );
+
+        return;
+    }
+
+
+    try {
+
+        log(
+            "Choose your Arduino..."
+        );
+
+
+        port =
+            await navigator.serial.requestPort();
+
+
+        await port.open({
+            baudRate: 115200
+        });
+
+
+        writer =
+            port.writable.getWriter();
+
+
+        statusText.textContent =
+            "Connected";
+
+
+        statusDot.classList.add(
+            "connected"
+        );
+
+
+        connectButton.textContent =
+            "Arduino Connected";
+
+
+        log(
+            "Arduino connected.\n\n" +
+            "LoWorks is ready."
+        );
+
+    }
+
+
+    catch (error) {
+
+        console.error(error);
+
+
+        log(
+            "Connection failed.\n\n" +
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   SERIAL
+========================================= */
+
+async function sendCommand(command) {
+
+    if (!writer) {
+
+        log(
+            "Connect your Arduino first."
+        );
+
+        return false;
+    }
+
+
+    try {
+
+        const data =
+            new TextEncoder().encode(
+                command + "\n"
+            );
+
+
+        await writer.write(data);
+
+
+        return true;
+
+    }
+
+
+    catch (error) {
+
+        console.error(error);
+
+
+        log(
+            "Could not send command.\n\n" +
+            error.message
+        );
+
+
+        return false;
+    }
+
+}
+
+
+/* =========================================
+   RUN
+========================================= */
+
+async function runProgram() {
+
+    if (!writer) {
+
+        log(
+            "Connect your Arduino first."
+        );
+
+        return;
+    }
+
+
+    runButton.style.transform =
+        "scale(.97)";
+
+
+    setTimeout(() => {
+
+        runButton.style.transform =
+            "";
+
+    }, 130);
+
+
+    log(
+        "Running LoWorks program..."
+    );
+
+
+    await sendCommand("RUN");
+
+}
+
+
+/* =========================================
+   STOP
+========================================= */
+
+async function stopProgram() {
+
+    if (!writer) {
+
+        return;
+    }
+
+
+    await sendCommand("STOP");
+
+
+    log(
+        "Program stopped."
+    );
+
+}
+
+
+/* =========================================
+   BUTTONS
+========================================= */
+
+connectButton.addEventListener(
+    "click",
+    connectArduino
+);
+
+
+runButton.addEventListener(
+    "click",
+    runProgram
+);
+
+
+stopButton.addEventListener(
+    "click",
+    stopProgram
+);
+
+
+/* =========================================
+   BLOCK DRAGGING
+========================================= */
+
+blocks.forEach(block => {
+
+    block.addEventListener(
+        "dragstart",
+        event => {
+
+            event.dataTransfer.setData(
+                "text/plain",
+                block.dataset.command
+            );
+
+
+            workspace.classList.add(
+                "drag-active"
+            );
+
+        }
+    );
+
+
+    block.addEventListener(
+        "dragend",
+        () => {
+
+            workspace.classList.remove(
+                "drag-active"
+            );
+
+        }
+    );
+
+});
+
+
+/* =========================================
+   DROP AREA
+========================================= */
+
+workspace.addEventListener(
+    "dragover",
+    event => {
+
+        event.preventDefault();
+
+    }
+);
+
+
+workspace.addEventListener(
+    "drop",
+    event => {
+
+        event.preventDefault();
+
+
+        workspace.classList.remove(
+            "drag-active"
+        );
+
+
+        const command =
+            event.dataTransfer.getData(
+                "text/plain"
+            );
+
+
+        if (!command) {
+
+            return;
+        }
+
+
+        log(
+            "Block selected:\n" +
+            command
+        );
+
+    }
+);
+
+
+/* =========================================
+   PAGE LOAD
+========================================= */
+
+window.addEventListener(
+    "load",
+    () => {
+
+        setTimeout(() => {
+
+            log(
+                "LoWorks is ready."
+            );
+
+        }, 700);
+
+    }
+);
+```
+
+### What this changes
+
+The page now opens with:
+
+**white → soft blue-white glow → interface smoothly fades in**
+
+and the UI has:
+
+* 🌈 Soft colored blocks
+* Very light Windows/macOS-style panels
+* Glassy header
+* Rounded controls
+* Subtle shadows
+* Smooth hover movement
+* Soft blur transitions
+* White page background
+* Fade-from-white page transition
+* Responsive layout
+
+And importantly, we're still keeping the three-file architecture so we can start making `script.js` into the **actual LoWorks programming engine** next.
