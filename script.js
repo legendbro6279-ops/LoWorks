@@ -1,17 +1,16 @@
 ```javascript
-/* =========================================================
+/* =========================================
    LoWorks — Prototype 01
-   Browser-side application logic
-========================================================= */
+========================================= */
 
 
 let port = null;
 let writer = null;
 
 
-/* =========================================================
+/* =========================================
    ELEMENTS
-========================================================= */
+========================================= */
 
 const connectButton =
     document.getElementById("connectButton");
@@ -38,9 +37,9 @@ const blocks =
     document.querySelectorAll(".block");
 
 
-/* =========================================================
+/* =========================================
    CONSOLE
-========================================================= */
+========================================= */
 
 function log(message) {
 
@@ -49,7 +48,8 @@ function log(message) {
     const dot =
         document.createElement("span");
 
-    dot.className = "console-dot";
+    dot.className =
+        "console-dot";
 
     consoleBox.appendChild(dot);
 
@@ -60,9 +60,9 @@ function log(message) {
 }
 
 
-/* =========================================================
-   CONNECTION
-========================================================= */
+/* =========================================
+   CONNECT
+========================================= */
 
 async function connectArduino() {
 
@@ -79,7 +79,7 @@ async function connectArduino() {
     try {
 
         log(
-            "Choose your Arduino from the device list..."
+            "Choose your Arduino..."
         );
 
 
@@ -132,9 +132,9 @@ async function connectArduino() {
 }
 
 
-/* =========================================================
-   SERIAL COMMAND
-========================================================= */
+/* =========================================
+   SERIAL
+========================================= */
 
 async function sendCommand(command) {
 
@@ -176,15 +176,14 @@ async function sendCommand(command) {
 
 
         return false;
-
     }
 
 }
 
 
-/* =========================================================
+/* =========================================
    RUN
-========================================================= */
+========================================= */
 
 async function runProgram() {
 
@@ -198,6 +197,18 @@ async function runProgram() {
     }
 
 
+    runButton.style.transform =
+        "scale(.97)";
+
+
+    setTimeout(() => {
+
+        runButton.style.transform =
+            "";
+
+    }, 130);
+
+
     log(
         "Running LoWorks program..."
     );
@@ -208,9 +219,9 @@ async function runProgram() {
 }
 
 
-/* =========================================================
+/* =========================================
    STOP
-========================================================= */
+========================================= */
 
 async function stopProgram() {
 
@@ -230,9 +241,9 @@ async function stopProgram() {
 }
 
 
-/* =========================================================
-   BUTTON EVENTS
-========================================================= */
+/* =========================================
+   BUTTONS
+========================================= */
 
 connectButton.addEventListener(
     "click",
@@ -252,24 +263,19 @@ stopButton.addEventListener(
 );
 
 
-/* =========================================================
+/* =========================================
    BLOCK DRAGGING
-========================================================= */
+========================================= */
 
 blocks.forEach(block => {
-
 
     block.addEventListener(
         "dragstart",
         event => {
 
-            const command =
-                block.dataset.command;
-
-
             event.dataTransfer.setData(
                 "text/plain",
-                command
+                block.dataset.command
             );
 
 
@@ -295,9 +301,9 @@ blocks.forEach(block => {
 });
 
 
-/* =========================================================
-   WORKSPACE DROP
-========================================================= */
+/* =========================================
+   DROP AREA
+========================================= */
 
 workspace.addEventListener(
     "dragover",
@@ -334,7 +340,7 @@ workspace.addEventListener(
 
 
         log(
-            "Selected block:\n" +
+            "Block selected:\n" +
             command
         );
 
@@ -342,12 +348,22 @@ workspace.addEventListener(
 );
 
 
-/* =========================================================
-   STARTUP
-========================================================= */
+/* =========================================
+   PAGE LOAD
+========================================= */
 
-log(
-    "LoWorks is ready."
+window.addEventListener(
+    "load",
+    () => {
+
+        setTimeout(() => {
+
+            log(
+                "LoWorks is ready."
+            );
+
+        }, 700);
+
+    }
 );
 ```
-
