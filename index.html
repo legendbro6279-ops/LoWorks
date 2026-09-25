@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,203 +8,611 @@
 <title>LoWorks — Prototype 01</title>
 
 <style>
-
 * {
     box-sizing: border-box;
 }
 
-body {
-    margin: 0;
-    background: #111;
-    color: #fff;
-    font-family: Arial, Helvetica, sans-serif;
+:root {
+    --blue: #4f7cff;
+    --blue-soft: #eaf0ff;
+
+    --purple: #8b63e8;
+    --purple-soft: #f0eaff;
+
+    --green: #42b883;
+    --green-soft: #e8f8f1;
+
+    --orange: #f39a4a;
+    --orange-soft: #fff1e4;
+
+    --pink: #e86b9a;
+    --pink-soft: #ffeaf2;
+
+    --yellow: #e8b83f;
+    --yellow-soft: #fff8dc;
+
+    --text: #20242b;
+    --muted: #7c8490;
+
+    --border: #e7e9ed;
+
+    --shadow:
+        0 10px 30px rgba(30, 40, 60, 0.07),
+        0 2px 7px rgba(30, 40, 60, 0.04);
 }
 
+html,
+body {
+    margin: 0;
+    min-height: 100%;
+}
+
+body {
+    background: #f7f8fa;
+    color: var(--text);
+
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Inter,
+        Arial,
+        sans-serif;
+
+    overflow-x: hidden;
+}
+
+
+/* =========================
+   TOP BAR
+========================= */
+
 header {
-    height: 64px;
-    border-bottom: 1px solid #292929;
+    height: 68px;
 
     display: flex;
     align-items: center;
 
-    padding: 0 24px;
+    padding: 0 30px;
+
+    background: rgba(255,255,255,0.9);
+
+    border-bottom: 1px solid var(--border);
+
+    backdrop-filter: blur(14px);
+
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
 .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
     font-size: 21px;
-    font-weight: 700;
+    font-weight: 750;
+
+    letter-spacing: -0.4px;
 }
 
-.version {
-    margin-left: auto;
-    color: #777;
-    font-size: 13px;
+.logo-mark {
+    width: 29px;
+    height: 29px;
+
+    border-radius: 9px;
+
+    background: linear-gradient(
+        135deg,
+        #4f7cff,
+        #8b63e8
+    );
+
+    box-shadow:
+        0 4px 12px rgba(79,124,255,0.25);
+
+    position: relative;
 }
+
+.logo-mark::after {
+    content: "";
+
+    width: 8px;
+    height: 8px;
+
+    background: white;
+
+    border-radius: 3px;
+
+    position: absolute;
+
+    left: 10px;
+    top: 10px;
+}
+
+.prototype {
+    margin-left: auto;
+
+    font-size: 13px;
+
+    color: var(--muted);
+
+    padding: 7px 11px;
+
+    background: #f4f5f7;
+
+    border: 1px solid var(--border);
+
+    border-radius: 8px;
+}
+
+
+/* =========================
+   PAGE
+========================= */
 
 main {
-    max-width: 1000px;
-    margin: 45px auto;
-    padding: 0 25px;
+    width: min(1080px, calc(100% - 40px));
+
+    margin: 48px auto 80px;
 }
 
-h1 {
+.page-title {
+    margin-bottom: 30px;
+
+    animation: fadeUp 0.45s ease both;
+}
+
+.page-title h1 {
     margin: 0;
-    font-size: 32px;
+
+    font-size: 35px;
+
+    letter-spacing: -1.2px;
 }
 
-.subtitle {
-    color: #777;
-    margin-top: 8px;
-    margin-bottom: 35px;
+.page-title p {
+    margin: 9px 0 0;
+
+    color: var(--muted);
+
+    font-size: 15px;
 }
+
+
+/* =========================
+   PANELS
+========================= */
 
 .panel {
-    background: #181818;
-    border: 1px solid #292929;
-    border-radius: 12px;
-    padding: 20px;
+    background: white;
+
+    border: 1px solid var(--border);
+
+    border-radius: 17px;
+
+    padding: 22px;
+
     margin-bottom: 18px;
+
+    box-shadow: var(--shadow);
+
+    animation: fadeUp 0.5s ease both;
+}
+
+.panel:nth-child(2) {
+    animation-delay: 0.05s;
+}
+
+.panel:nth-child(3) {
+    animation-delay: 0.1s;
 }
 
 .panel-title {
-    color: #777;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 15px;
-}
-
-button {
-    border: none;
-    border-radius: 7px;
-    padding: 11px 17px;
-
-    background: #fff;
-    color: #111;
-
-    font-size: 14px;
-    font-weight: 600;
-
-    cursor: pointer;
-}
-
-button:hover {
-    background: #ddd;
-}
-
-button.dark {
-    background: #292929;
-    color: #fff;
-}
-
-.status {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 9px;
 
-    margin-left: 12px;
-
-    color: #777;
     font-size: 13px;
+    font-weight: 700;
+
+    color: #505761;
+
+    margin-bottom: 17px;
 }
 
-.status-dot {
+.panel-title-dot {
     width: 8px;
     height: 8px;
 
     border-radius: 50%;
-    background: #555;
+
+    background: var(--blue);
+}
+
+
+/* =========================
+   DEVICE
+========================= */
+
+.device-row {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+
+    flex-wrap: wrap;
+}
+
+button {
+    border: 0;
+
+    border-radius: 10px;
+
+    padding: 11px 17px;
+
+    font-family: inherit;
+
+    font-size: 14px;
+    font-weight: 650;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.16s ease,
+        box-shadow 0.16s ease,
+        background 0.16s ease;
+}
+
+button:hover {
+    transform: translateY(-1px);
+}
+
+button:active {
+    transform: translateY(1px) scale(0.98);
+}
+
+.primary {
+    color: white;
+
+    background: linear-gradient(
+        135deg,
+        #4f7cff,
+        #657fff
+    );
+
+    box-shadow:
+        0 6px 15px rgba(79,124,255,0.22);
+}
+
+.primary:hover {
+    box-shadow:
+        0 8px 19px rgba(79,124,255,0.29);
+}
+
+.secondary {
+    background: #f1f3f6;
+    color: #4d535c;
+}
+
+.status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    color: var(--muted);
+
+    font-size: 13px;
+}
+
+.status-dot {
+    width: 9px;
+    height: 9px;
+
+    border-radius: 50%;
+
+    background: #c5cad1;
+
+    transition:
+        background 0.3s ease,
+        box-shadow 0.3s ease;
 }
 
 .status-dot.connected {
-    background: #6bcf7f;
+    background: var(--green);
+
+    box-shadow:
+        0 0 0 4px rgba(66,184,131,0.12);
 }
+
+
+/* =========================
+   WORKSPACE
+========================= */
 
 .workspace {
-    min-height: 350px;
+    min-height: 390px;
 
-    background: #101010;
+    padding: 26px;
 
-    border: 1px solid #292929;
-    border-radius: 9px;
+    border-radius: 13px;
 
-    padding: 25px;
+    background:
+        radial-gradient(
+            circle at 20px 20px,
+            #edf0f4 1.2px,
+            transparent 1.2px
+        );
+
+    background-size: 22px 22px;
+
+    border: 1px solid #e9ebef;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
+.workspace.drag-active {
+    border-color: #9db4ff;
+
+    box-shadow:
+        inset 0 0 0 2px rgba(79,124,255,0.08);
+}
+
+
+/* =========================
+   BLOCKS
+========================= */
+
 .block {
-    width: 290px;
+    width: 315px;
 
-    background: #292929;
+    min-height: 53px;
 
-    border-radius: 7px;
+    display: flex;
+    align-items: center;
 
-    padding: 14px 17px;
+    padding: 13px 17px;
 
-    margin-bottom: 8px;
+    margin-bottom: 9px;
 
-    font-family: monospace;
+    border-radius: 11px;
+
+    color: white;
+
     font-size: 14px;
+    font-weight: 650;
 
     cursor: grab;
 
-    border-left: 4px solid #888;
+    box-shadow:
+        0 5px 12px rgba(30,40,60,0.09);
+
+    user-select: none;
+
+    transition:
+        transform 0.18s cubic-bezier(.2,.8,.2,1),
+        box-shadow 0.18s ease,
+        filter 0.18s ease;
 }
 
 .block:hover {
-    background: #333;
+    transform: translateX(4px);
+
+    box-shadow:
+        0 8px 17px rgba(30,40,60,0.13);
+
+    filter: brightness(1.025);
+}
+
+.block:active {
+    cursor: grabbing;
+
+    transform: scale(0.985);
 }
 
 .block.start {
-    border-left-color: #fff;
+    background:
+        linear-gradient(
+            135deg,
+            #667eea,
+            #7b68ee
+        );
+}
+
+.block.action-blue {
+    background:
+        linear-gradient(
+            135deg,
+            #4f7cff,
+            #5d8cff
+        );
+}
+
+.block.action-green {
+    background:
+        linear-gradient(
+            135deg,
+            #36ad7b,
+            #4fc58f
+        );
+}
+
+.block.action-orange {
+    background:
+        linear-gradient(
+            135deg,
+            #ee9140,
+            #f5a35a
+        );
 }
 
 .block.control {
-    border-left-color: #aaa;
+    background:
+        linear-gradient(
+            135deg,
+            #e45f8f,
+            #ed77a0
+        );
 }
 
-.block.action {
-    border-left-color: #777;
-}
+.block-icon {
+    width: 28px;
+    height: 28px;
 
-.workspace-empty {
-    color: #555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-right: 11px;
+
+    border-radius: 8px;
+
+    background: rgba(255,255,255,0.18);
+
     font-size: 13px;
-    margin-top: 20px;
 }
+
+.block-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.block-label {
+    font-size: 13px;
+}
+
+.block-detail {
+    font-size: 11px;
+    font-weight: 500;
+
+    opacity: 0.75;
+}
+
+
+/* =========================
+   CONTROLS
+========================= */
 
 .controls {
-    margin-top: 20px;
+    display: flex;
+
+    gap: 9px;
+
+    margin-top: 19px;
 }
 
-#console {
-    background: #0b0b0b;
+.run {
+    background: #20242b;
+    color: white;
 
-    border-radius: 7px;
+    padding-left: 21px;
+    padding-right: 21px;
+}
 
-    padding: 14px;
+.run:hover {
+    background: #30353d;
+}
 
-    min-height: 100px;
 
-    color: #777;
+/* =========================
+   CONSOLE
+========================= */
 
-    font-family: monospace;
-    font-size: 13px;
+.console {
+    background: #f7f8fa;
+
+    border: 1px solid #e7e9ed;
+
+    border-radius: 10px;
+
+    padding: 15px;
+
+    min-height: 90px;
+
+    color: #707783;
+
+    font-family:
+        "SFMono-Regular",
+        Consolas,
+        monospace;
+
+    font-size: 12px;
+
+    line-height: 1.7;
 
     white-space: pre-wrap;
 }
 
+
+/* =========================
+   ANIMATIONS
+========================= */
+
+@keyframes fadeUp {
+
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 650px) {
+
+    header {
+        padding: 0 18px;
+    }
+
+    main {
+        width: calc(100% - 24px);
+
+        margin-top: 30px;
+    }
+
+    .page-title h1 {
+        font-size: 29px;
+    }
+
+    .workspace {
+        padding: 17px;
+    }
+
+    .block {
+        width: 100%;
+    }
+
+}
 </style>
 </head>
 
+
 <body>
+
 
 <header>
 
     <div class="logo">
+
+        <div class="logo-mark"></div>
+
         LoWorks
+
     </div>
 
-    <div class="version">
+    <div class="prototype">
         Prototype 01
     </div>
 
@@ -212,10 +621,15 @@ button.dark {
 
 <main>
 
-    <h1>Prototype 01</h1>
 
-    <div class="subtitle">
-        Browser-based hardware programming
+    <div class="page-title">
+
+        <h1>Build something.</h1>
+
+        <p>
+            Program your hardware without leaving LoWorks.
+        </p>
+
     </div>
 
 
@@ -224,366 +638,32 @@ button.dark {
     <div class="panel">
 
         <div class="panel-title">
+
+            <span class="panel-title-dot"></span>
+
             Device
-        </div>
-
-        <button id="connect">
-            Connect Arduino
-        </button>
-
-        <div class="status">
-
-            <div id="statusDot" class="status-dot"></div>
-
-            <span id="statusText">
-                Not connected
-            </span>
-
-        </div>
-
-    </div>
-
-
-    <!-- PROGRAM -->
-
-    <div class="panel">
-
-        <div class="panel-title">
-            Program
-        </div>
-
-
-        <div id="workspace" class="workspace">
-
-            <div
-                class="block start"
-                draggable="true"
-                data-command="START"
-            >
-                WHEN PROGRAM STARTS
-            </div>
-
-
-            <div
-                class="block action"
-                draggable="true"
-                data-command="LED_ON"
-            >
-                SET LED → ON
-            </div>
-
-
-            <div
-                class="block action"
-                draggable="true"
-                data-command="WAIT 500"
-            >
-                WAIT → 500 ms
-            </div>
-
-
-            <div
-                class="block action"
-                draggable="true"
-                data-command="LED_OFF"
-            >
-                SET LED → OFF
-            </div>
-
-
-            <div
-                class="block control"
-                draggable="true"
-                data-command="REPEAT"
-            >
-                REPEAT FOREVER
-            </div>
-
-
-            <div class="workspace-empty">
-                Drag blocks here to build your program.
-            </div>
 
         </div>
 
 
-        <div class="controls">
+        <div class="device-row">
 
-            <button id="run">
-                Run
+            <button
+                id="connect"
+                class="primary"
+            >
+                Connect Arduino
             </button>
 
-            <button id="stop" class="dark">
-                Stop
-            </button>
 
-        </div>
+            <div class="status">
 
-    </div>
+                <div
+                    id="statusDot"
+                    class="status-dot"
+                ></div>
 
-
-    <!-- CONSOLE -->
-
-    <div class="panel">
-
-        <div class="panel-title">
-            Console
-        </div>
-
-        <div id="console">
-            LoWorks ready.
-        </div>
-
-    </div>
-
-</main>
-
-
-<script>
-
-let port = null;
-let writer = null;
-
-
-/* -------------------------
-   UI
-------------------------- */
-
-const connectButton =
-    document.getElementById("connect");
-
-const runButton =
-    document.getElementById("run");
-
-const stopButton =
-    document.getElementById("stop");
-
-const statusText =
-    document.getElementById("statusText");
-
-const statusDot =
-    document.getElementById("statusDot");
-
-const consoleBox =
-    document.getElementById("console");
-
-
-function log(text) {
-
-    consoleBox.textContent = text;
-
-}
-
-
-/* -------------------------
-   SERIAL
-------------------------- */
-
-async function connectArduino() {
-
-    if (!("serial" in navigator)) {
-
-        log(
-            "Web Serial is not supported in this browser."
-        );
-
-        return;
-    }
-
-
-    try {
-
-        port =
-            await navigator.serial.requestPort();
-
-
-        await port.open({
-            baudRate: 115200
-        });
-
-
-        writer =
-            port.writable.getWriter();
-
-
-        statusText.textContent =
-            "Connected";
-
-        statusDot.classList.add(
-            "connected"
-        );
-
-
-        log(
-            "Arduino connected.\n\nLoWorks is ready."
-        );
-
-    }
-
-    catch(error) {
-
-        console.error(error);
-
-        log(
-            "Connection failed:\n\n" +
-            error.message
-        );
-
-    }
-
-}
-
-
-/* -------------------------
-   SEND COMMAND
-------------------------- */
-
-async function send(command) {
-
-    if (!writer) {
-
-        log(
-            "Connect your Arduino first."
-        );
-
-        return;
-    }
-
-
-    const data =
-        new TextEncoder().encode(
-            command + "\n"
-        );
-
-
-    await writer.write(data);
-
-}
-
-
-/* -------------------------
-   RUN
-------------------------- */
-
-async function runProgram() {
-
-    if (!writer) {
-
-        log(
-            "Connect your Arduino first."
-        );
-
-        return;
-    }
-
-
-    log(
-        "Running LoWorks program..."
-    );
-
-
-    await send("RUN");
-
-}
-
-
-/* -------------------------
-   STOP
-------------------------- */
-
-async function stopProgram() {
-
-    if (!writer) {
-
-        return;
-    }
-
-
-    await send("STOP");
-
-
-    log(
-        "Program stopped."
-    );
-
-}
-
-
-/* -------------------------
-   BUTTONS
-------------------------- */
-
-connectButton.onclick =
-    connectArduino;
-
-runButton.onclick =
-    runProgram;
-
-stopButton.onclick =
-    stopProgram;
-
-
-/* -------------------------
-   BLOCK DRAGGING
-------------------------- */
-
-const blocks =
-    document.querySelectorAll(".block");
-
-
-blocks.forEach(block => {
-
-    block.addEventListener(
-        "dragstart",
-        event => {
-
-            event.dataTransfer.setData(
-                "text/plain",
-                block.dataset.command
-            );
-
-        }
-    );
-
-});
-
-
-const workspace =
-    document.getElementById("workspace");
-
-
-workspace.addEventListener(
-    "dragover",
-    event => {
-
-        event.preventDefault();
-
-    }
-);
-
-
-workspace.addEventListener(
-    "drop",
-    event => {
-
-        event.preventDefault();
-
-        const command =
-            event.dataTransfer.getData(
-                "text/plain"
-            );
-
-        if (!command) return;
-
-        log(
-            "Block selected:\n" +
-            command
-        );
-
-    }
-);
-
-</script>
-
-</body>
-</html>
+                <span id="statusText">
+                    Not connected
+                </s
+```
