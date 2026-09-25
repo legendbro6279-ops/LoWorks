@@ -2,285 +2,217 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>LoWorks Engine</title>
+    <title>LoWorks</title>
 
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<header class="topbar">
+    <div class="app">
 
-    <div class="brand">
-        <div class="logo">
-            <span></span>
-        </div>
+        <header class="topbar">
 
-        <div>
-            <div class="brand-name">LoWorks</div>
-            <div class="brand-subtitle">
-                Hardware Engine
+            <div class="brand">
+                <div class="logo">LW</div>
+
+                <div>
+                    <h1>LoWorks</h1>
+                    <span>Prototype 01</span>
+                </div>
             </div>
-        </div>
+
+            <div class="connection">
+                <div id="statusDot"></div>
+                <span id="statusText">Not Connected</span>
+            </div>
+
+        </header>
+
+
+        <main>
+
+            <section class="welcome">
+
+                <div>
+                    <p class="eyebrow">HARDWARE PROJECT</p>
+
+                    <h2>
+                        Make your first
+                        <span>thing.</span>
+                    </h2>
+
+                    <p class="description">
+                        Connect an Arduino UNO R4 WiFi and control its built-in D13 LED.
+                    </p>
+
+                    <button id="connectButton">
+                        Connect Arduino
+                    </button>
+                </div>
+
+                <div class="board">
+
+                    <div class="board-top">
+                        <span class="board-label">BOARD</span>
+
+                        <div class="usb">
+                            USB
+                        </div>
+                    </div>
+
+                    <div class="board-name" id="boardName">
+                        Arduino UNO R4 WiFi
+                    </div>
+
+                    <div class="board-bottom">
+
+                        <div class="led">
+                            <div id="ledLight"></div>
+
+                            <div>
+                                <strong>D13</strong>
+                                <span>Built-in LED</span>
+                            </div>
+                        </div>
+
+                        <div class="board-state" id="boardState">
+                            Waiting
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <section class="workspace">
+
+                <div class="workspace-header">
+
+                    <div>
+                        <p class="eyebrow">PROGRAM</p>
+                        <h3>Your Program</h3>
+                    </div>
+
+                    <div class="project-name">
+                        D13 LED Test
+                    </div>
+
+                </div>
+
+
+                <div class="blocks">
+
+                    <div class="block start">
+
+                        <div class="block-icon">
+                            ▶
+                        </div>
+
+                        <div>
+                            <small>EVENT</small>
+                            <strong>WHEN START</strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="connector">
+                        ↓
+                    </div>
+
+
+                    <div class="block light">
+
+                        <div class="block-icon">
+                            ●
+                        </div>
+
+                        <div class="block-main">
+
+                            <small>LIGHT</small>
+
+                            <div class="block-line">
+                                <strong>SET LED</strong>
+
+                                <select id="ledSelect">
+                                    <option value="ON">ON</option>
+                                    <option value="OFF">OFF</option>
+                                </select>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="actions">
+
+                    <button
+                        id="runButton"
+                        class="run"
+                        disabled
+                    >
+                        ▶ Run Program
+                    </button>
+
+                    <button
+                        id="offButton"
+                        class="secondary"
+                        disabled
+                    >
+                        Turn Off
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            <section class="console">
+
+                <div class="console-top">
+
+                    <span>Console</span>
+
+                    <button id="clearButton">
+                        Clear
+                    </button>
+
+                </div>
+
+                <div id="consoleOutput">
+
+                    <div class="message">
+                        <i></i>
+                        LoWorks is ready.
+                    </div>
+
+                    <div class="message muted">
+                        Connect your Arduino UNO R4 WiFi to begin.
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+
+        <footer>
+            LoWorks · Prototype 01
+        </footer>
+
     </div>
 
-    <div class="engine-status">
-        <span id="engineDot"></span>
-        Engine Ready
-    </div>
 
-</header>
-
-
-<main>
-
-    <section class="hero">
-
-        <div class="eyebrow">
-            LOWORKS ENGINE 0.1
-        </div>
-
-        <h1>
-            Build hardware
-            <span>without the hardware language.</span>
-        </h1>
-
-        <p>
-            The engine underneath LoWorks understands the technical
-            side. The interface will translate it into something
-            people can actually understand.
-        </p>
-
-    </section>
-
-
-    <section class="grid">
-
-
-        <!-- HARDWARE -->
-
-        <section class="panel">
-
-            <div class="panel-title">
-
-                <div class="icon blue">
-                    USB
-                </div>
-
-                <div>
-                    <h2>Hardware</h2>
-                    <p>
-                        Connect a supported board.
-                    </p>
-                </div>
-
-            </div>
-
-
-            <div class="hardware-card">
-
-                <div class="hardware-icon">
-                    ◉
-                </div>
-
-                <div class="hardware-info">
-
-                    <strong id="boardName">
-                        No board connected
-                    </strong>
-
-                    <span id="boardDetails">
-                        Waiting for hardware
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <button
-                id="connectButton"
-                class="button primary"
-            >
-                Connect Hardware
-            </button>
-
-
-            <div class="capabilities">
-
-                <div class="small-label">
-                    CAPABILITIES
-                </div>
-
-                <div
-                    id="capabilityList"
-                    class="capability-list"
-                >
-                    Connect a board to inspect it.
-                </div>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- COMPONENTS -->
-
-        <section class="panel">
-
-            <div class="panel-title">
-
-                <div class="icon purple">
-                    +
-                </div>
-
-                <div>
-                    <h2>Components</h2>
-                    <p>
-                        Hardware understood by LoWorks.
-                    </p>
-                </div>
-
-            </div>
-
-
-            <div
-                id="componentList"
-                class="component-list"
-            ></div>
-
-        </section>
-
-
-
-        <!-- PROGRAM -->
-
-        <section class="panel program-panel">
-
-            <div class="panel-title">
-
-                <div class="icon green">
-                    ▶
-                </div>
-
-                <div>
-                    <h2>Program</h2>
-                    <p>
-                        The engine's internal representation.
-                    </p>
-                </div>
-
-            </div>
-
-
-            <div
-                id="programView"
-                class="program-view"
-            ></div>
-
-
-            <div class="program-actions">
-
-                <button
-                    id="validateButton"
-                    class="button secondary"
-                >
-                    Validate
-                </button>
-
-                <button
-                    id="runButton"
-                    class="button run"
-                >
-                    ▶ Run
-                </button>
-
-                <button
-                    id="stopButton"
-                    class="button secondary"
-                >
-                    Stop
-                </button>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- ADVANCED ENGINE -->
-
-        <section class="panel advanced-panel">
-
-            <div class="panel-title">
-
-                <div class="icon orange">
-                    &lt;/&gt;
-                </div>
-
-                <div>
-                    <h2>Advanced Engine</h2>
-                    <p>
-                        The technical representation underneath Easy Mode.
-                    </p>
-                </div>
-
-            </div>
-
-
-            <pre
-                id="advancedView"
-                class="code-view"
-            ></pre>
-
-        </section>
-
-
-
-        <!-- CONSOLE -->
-
-        <section class="panel console-panel">
-
-            <div class="panel-title">
-
-                <div class="icon gray">
-                    LOG
-                </div>
-
-                <div>
-                    <h2>Engine Console</h2>
-                    <p>
-                        Internal LoWorks messages.
-                    </p>
-                </div>
-
-            </div>
-
-
-            <div
-                id="console"
-                class="console"
-            ></div>
-
-        </section>
-
-    </section>
-
-</main>
-
-
-<footer>
-    LoWorks Engine 0.1 · Browser Native
-</footer>
-
-
-<script src="script.js"></script>
+    <script src="script.js"></script>
 
 </body>
 </html>
