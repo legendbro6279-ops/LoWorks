@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>LoWorks</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div class="brand">LoWorks</div>
+      <div class="project-title-wrap">
+        <input id="projectName" class="project-title" value="Untitled Project" aria-label="Project name">
+      </div>
+      <div class="toolbar">
+        <button class="icon-btn" id="undoBtn" title="Undo" aria-label="Undo"></button>
+        <button class="icon-btn" id="redoBtn" title="Redo" aria-label="Redo"></button>
+        <span class="toolbar-divider"></span>
+        <button class="icon-btn" id="zoomOutBtn" title="Zoom out" aria-label="Zoom out"></button>
+        <span id="zoomLabel" class="zoom-label">100%</span>
+        <button class="icon-btn" id="zoomInBtn" title="Zoom in" aria-label="Zoom in"></button>
+        <button class="icon-btn" id="centerBtn" title="Center workspace" aria-label="Center workspace"></button>
+        <button class="icon-btn" id="gridBtn" title="Toggle grid" aria-label="Toggle grid"></button>
+        <button class="icon-btn" id="arrangeBtn" title="Arrange connected blocks" aria-label="Arrange connected blocks"></button>
+        <button class="icon-btn" id="noteBtn" title="Open notebook" aria-label="Open notebook"></button>
+        <button class="settings-btn" id="settingsBtn" title="Settings" aria-label="Settings"></button>
+        <button class="copy-btn" id="copyBtn"><span class="copy-icon"></span><span>Copy Code</span></button>
+      </div>
+    </header>
+
+    <main id="mainView" class="view hidden">
+      <section class="library-panel">
+        <div class="library-head">
+          <div class="panel-title">Library</div>
+          <button id="newProjectBtn" class="small-action" title="New project"></button>
+        </div>
+        <div class="search-box">
+          <span class="search-icon"></span>
+          <input id="librarySearch" placeholder="Search">
+        </div>
+        <div id="categoryList" class="category-list"></div>
+        <div class="library-footer">
+          <button id="backToLibraryBtn" class="text-action"><span class="home-icon"></span> Projects</button>
+        </div>
+      </section>
+
+      <section class="workspace-panel" id="workspacePanel">
+        <div id="canvas" class="canvas grid-on">
+          <div id="world" class="world"></div>
+          <div id="canvasHint" class="canvas-hint">Drag blocks from the library. Drop them anywhere.</div>
+          <div class="minimap" id="minimap"></div>
+        </div>
+        <div class="code-panel collapsed" id="codePanel">
+          <div class="code-head">
+            <span>Generated code</span>
+            <button id="closeCodeBtn" class="mini-btn" title="Close code"></button>
+          </div>
+          <pre id="codeOutput"></pre>
+        </div>
+      </section>
+
+      <aside class="logs-panel">
+        <div class="logs-head">
+          <span>Logs</span>
+          <button id="clearLogsBtn" class="mini-btn" title="Clear logs"></button>
+        </div>
+        <div id="logs"></div>
+      </aside>
+    </main>
+
+    <section id="libraryView" class="library-view">
+      <div class="library-hero">
+        <div class="hero-mark">LW</div>
+        <h1>LoWorks</h1>
+        <p>Build hardware programs visually.</p>
+      </div>
+      <div class="library-actions">
+        <button id="createProject" class="primary-card">
+          <span class="card-icon plus-icon"></span>
+          <span><strong>New Project</strong><small>Start a fresh workspace</small></span>
+        </button>
+        <button id="openProject" class="secondary-card">
+          <span class="card-icon folder-icon"></span>
+          <span><strong>Open Project</strong><small>Load a saved LoWorks project</small></span>
+        </button>
+        <input id="projectFile" type="file" accept=".json" hidden>
+      </div>
+      <div class="saved-head">
+        <span>Recent projects</span>
+      </div>
+      <div id="projectCards" class="project-cards"></div>
+      <div class="library-bottom">
+        <button id="importProject" class="quiet-btn"><span class="import-icon"></span> Import</button>
+        <button id="exportProject" class="quiet-btn"><span class="export-icon"></span> Export current</button>
+      </div>
+    </section>
+
+    <div id="notebook" class="notebook hidden">
+      <div class="notebook-head">
+        <span><span class="note-icon"></span> Sketch</span>
+        <button id="closeNotebook" class="mini-btn"></button>
+      </div>
+      <textarea id="notebookText" placeholder="Jot down ideas, pins, wiring notes..."></textarea>
+      <div class="notebook-foot">Saved automatically</div>
+    </div>
+
+    <div id="settingsModal" class="modal hidden">
+      <div class="modal-card">
+        <div class="modal-head">
+          <h2>Settings</h2>
+          <button id="closeSettings" class="mini-btn"></button>
+        </div>
+        <label class="setting-row"><span>Show generated code</span><input id="showCodeSetting" type="checkbox" checked></label>
+        <label class="setting-row"><span>Auto-save projects</span><input id="autosaveSetting" type="checkbox" checked></label>
+        <label class="setting-row"><span>Snap blocks to grid</span><input id="snapSetting" type="checkbox" checked></label>
+        <label class="setting-row"><span>Reduced motion</span><input id="motionSetting" type="checkbox"></label>
+        <div class="settings-note">LoWorks runs entirely in your browser. Hardware is programmed through the generated code.</div>
+      </div>
+    </div>
+
+    <footer class="made-by">Made by LWR</footer>
+  </div>
+
+<script>
+const ICONS = {
+  plus:`<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>`,
+  folder:`<svg viewBox="0 0 24 24"><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H10l2 2h6.5A2.5 2.5 0 0 1 21 9.5v8A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5z"/></svg>`,
+  search:`<svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg>`,
+  undo:`<svg viewBox="0 0 24 24"><path d="M9 7 4 12l5 5"/><path d="M5 12h8a6 6 0 0 1 6 6"/></svg>`,
+  redo:`<svg viewBox="0 0 24 24"><path d="m15 7 5 5-5 5"/><path d="M19 12h-8a6 6 0 0 0-6 6"/></svg>`,
+  minus:`<svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg>`,
+  center:`<svg viewBox="0 0 24 24"><path d="M12 3v5M12 16v5M3 12h5M16 12h5"/><rect x="8" y="8" width="8" height="8" rx="2"/></svg>`,
+  grid:`<svg viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg>`,
+  arrange:`<svg viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/><path d="M11 7h2M7 11v2M17 11v2M11 17h2"/></svg>`,
+  note:`<svg viewBox="0 0 24 24"><path d="M5 3h14v18H5z"/><path d="M8 7h8M8 11h8M8 15h5"/></svg>`,
+  settings:`<svg viewBox="0 0 24 24"><path d="M9.6 3.5 10.4 2h3.2l.8 1.5 1.7.7 1.6-.4 2.2 2.2-.4 1.6.7 1.7 1.5.8v3.2l-1.5.8-.7 1.7.4 1.6-2.2 2.2-1.6-.4-1.7.7-.8 1.5h-3.2l-.8-1.5-1.7-.7-1.6.4-2.2-2.2.4-1.6-.7-1.7-1.5-.8V10l1.5-.8.7-1.7-.4-1.6L5.9 3.7l1.6.4z"/><circle cx="12" cy="12" r="3"/></svg>`,
+  copy:`<svg viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h3"/></svg>`,
+  trash:`<svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"/></svg>`,
+  home:`<svg viewBox="0 0 24 24"><path d="m4 11 8-7 8 7v9H4z"/><path d="M9 20v-5h6v5"/></svg>`,
+  clear:`<svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg>`,
+  import:`<svg viewBox="0 0 24 24"><path d="M12 15V3M8 7l4-4 4 4M5 13v6h14v-6"/></svg>`,
+  export:`<svg viewBox="0 0 24 24"><path d="M12 9v12M8 17l4 4 4-4M5 11V5h14v6"/></svg>`
+};
+function icon(name){return ICONS[name]||""}
+document.querySelectorAll("#undoBtn").forEach(e=>e.innerHTML=icon("undo"));
+document.querySelector("#redoBtn").innerHTML=icon("redo");
+document.querySelector("#zoomOutBtn").innerHTML=icon("minus");
+document.querySelector("#zoomInBtn").innerHTML=icon("plus");
+document.querySelector("#centerBtn").innerHTML=icon("center");
+document.querySelector("#gridBtn").innerHTML=icon("grid");
+document.querySelector("#arrangeBtn").innerHTML=icon("arrange");
+document.querySelector("#noteBtn").innerHTML=icon("note");
+document.querySelector("#settingsBtn").innerHTML=icon("settings");
+document.querySelector(".copy-icon").innerHTML=icon("copy");
+document.querySelector("#newProjectBtn").innerHTML=icon("plus");
+document.querySelector("#backToLibraryBtn .home-icon").outerHTML=icon("home");
+document.querySelector("#clearLogsBtn").innerHTML=icon("clear");
+document.querySelector("#closeCodeBtn").innerHTML=icon("clear");
+document.querySelector("#closeNotebook").innerHTML=icon("clear");
+document.querySelector("#closeSettings").innerHTML=icon("clear");
+document.querySelector(".search-icon").outerHTML=icon("search");
+document.querySelector(".plus-icon").innerHTML=icon("plus");
+document.querySelector(".folder-icon").innerHTML=icon("folder");
+document.querySelector(".import-icon").outerHTML=icon("import");
+document.querySelector(".export-icon").outerHTML=icon("export");
+document.querySelector(".note-icon").outerHTML=icon("note");
+
+const BOARDS = {
+  unoR4WiFi:{name:"Arduino UNO R4 WiFi",short:"UNO R4 WiFi",language:"Arduino C++",uploader:"Arduino CLI",builtin:"LED_BUILTIN"},
+  pico2w:{name:"Raspberry Pi Pico 2 W",short:"Pico 2 W",language:"MicroPython",uploader:"Thonny",builtin:"LED"}
+};
+
+const BLOCKS = {
+  events:[
+    ["start","Start","event"],["buttonPressed","When Button Pressed","event"],["pinChanged","When Pin Changes","event"],["valueChanged","When Value Changes","event"]
+  ],
+  light:[
+    ["setLed","Set LED","light"],["toggleLed","Toggle LED","light"],["setRgb","Set RGB","light"],["brightness","Set Brightness","light"],["fadeLed","Fade LED","light"]
+  ],
+  input:[
+    ["readButton","Read Button","input"],["digitalRead","Read Digital Pin","input"],["analogRead","Read Analog Pin","input"],["pot","Read Potentiometer","input"],["sensor","Read Sensor","input"]
+  ],
+  output:[
+    ["digitalWrite","Set Pin","output"],["togglePin","Toggle Pin","output"],["pwm","Set PWM","output"],["servo","Set Servo","output"],["buzzer","Buzzer","output"],["tone","Play Tone","output"],["stopTone","Stop Tone","output"]
+  ],
+  timing:[
+    ["wait","Wait","timing"],["waitUntil","Wait Until","timing"],["every","Every","timing"],["startTimer","Start Timer","timing"],["resetTimer","Reset Timer","timing"]
+  ],
+  control:[
+    ["repeat","Repeat","control"],["repeatUntil","Repeat Until","control"],["while","While","control"],["if","If","control"],["ifElse","If / Else","control"],["break","Break Loop","control"],["stop","Stop Program","control"]
+  ],
+  variables:[
+    ["createVar","Create Variable","variables"],["setVar","Set Variable","variables"],["changeVar","Change Variable","variables"],["getVar","Get Variable","variables"]
+  ],
+  math:[
+    ["add","Add","math"],["subtract","Subtract","math"],["multiply","Multiply","math"],["divide","Divide","math"],["mod","Modulo","math"],["random","Random","math"],["absolute","Absolute","math"],["minimum","Minimum","math"],["maximum","Maximum","math"],["round","Round","math"]
+  ],
+  logic:[
+    ["and","AND","logic"],["or","OR","logic"],["not","NOT","logic"],["equal","Equal To","logic"],["notEqual","Not Equal","logic"],["greater","Greater Than","logic"],["less","Less Than","logic"],["greaterEqual","Greater Or Equal","logic"],["lessEqual","Less Or Equal","logic"]
+  ],
+  communication:[
+    ["serialPrint","Serial Print","communication"],["serialPrintLine","Serial Print Line","communication"],["serialRead","Serial Read","communication"],["i2cRead","I2C Read","communication"],["i2cWrite","I2C Write","communication"],["uartSend","UART Send","communication"]
+  ],
+  hardware:[
+    ["digitalWrite2","Digital Write","hardware"],["digitalRead2","Digital Read","hardware"],["analogRead2","Analog Read","hardware"],["analogWrite","Analog Write","hardware"],["interrupt","Interrupt","hardware"]
+  ],
+  functions:[
+    ["createFunction","Create Function","functions"],["callFunction","Call Function","functions"],["return","Return","functions"]
+  ],
+  comments:[["comment","Comment","comments"]]
+};
+
+const CAT_NAMES = {events:"Events",light:"Light",input:"Input",output:"Output",timing:"Timing",control:"Control",variables:"Variables",math:"Math",logic:"Logic",communication:"Communication",hardware:"Hardware",functions:"Functions",comments:"Comments"};
+const CAT_COLORS = {events:"#f8e58b",light:"#d9f2df",input:"#dcecf8",output:"#d9f0e7",timing:"#f8e6cc",control:"#e7ddf5",variables:"#e7e9ed",math:"#e8e2f7",logic:"#dce8f7",communication:"#d8eeee",hardware:"#e3e9ed",functions:"#e8def1",comments:"#eeeeea"};
+
+let state = {
+  view:"library", projectId:null, projectName:"Untitled Project", board:"unoR4WiFi",
+  blocks:[{id:"start-1",type:"start",x:360,y:180,locked:true}],
+  notes:"", logs:[], zoom:1, panX:0, panY:0, grid:true,
+  settings:{showCode:true,autosave:true,snap:true,reducedMotion:false},
+  history:[], future:[], selected:null, dragging:null
+};
+
+const $=s=>document.querySelector(s);
+const uid=()=>Math.random().toString(36).slice(2,9);
+function saveHistory(){state.history.push(JSON.stringify(state.blocks)); if(state.history.length>40)state.history.shift(); state.future=[];}
+function log(msg,type="info"){state.logs.push({time:new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit",second:"2-digit"}),msg,type}); renderLogs(); if(state.settings.autosave)persistCurrent();}
+function persistCurrent(){
+  if(!state.projectId)return;
+  const all=JSON.parse(localStorage.getItem("loworksProjects")||"{}");
+  all[state.projectId]={id:state.projectId,name:state.projectName,board:state.board,blocks:state.blocks,notes:state.notes,updated:Date.now()};
+  localStorage.setItem("loworksProjects",JSON.stringify(all));
+  renderProjectCards();
+}
+function freshProject(name="Untitled Project"){
+  state.projectId=uid(); state.projectName=name; state.board="unoR4WiFi"; state.blocks=[{id:uid(),type:"start",x:390,y:180,locked:true}];
+  state.notes="";state.logs=[];state.zoom=1;state.panX=0;state.panY=0;state.selected=null; state.history=[];state.future=[];
+  persistCurrent(); log("Project created"); openWorkspace();
+}
+function openWorkspace(){
+  state.view="workspace"; $("#libraryView").classList.add("hidden"); $("#mainView").classList.remove("hidden");
+  $("#projectName").value=state.projectName; renderCategories(); renderWorld(); renderCode(); renderLogs(); updateMinimap(); applyView();
+}
+function applyView(){
+  document.body.classList.toggle("reduced-motion",state.settings.reducedMotion);
+  $("#canvas").classList.toggle("grid-on",state.grid);
+  $("#zoomLabel").textContent=Math.round(state.zoom*100)+"%";
+}
+function renderCategories(filter=""){
+  const list=$("#categoryList"); list.innerHTML="";
+  for(const [cat,items] of Object.entries(BLOCKS)){
+    const matches=items.filter(([id,name])=>name.toLowerCase().includes(filter.toLowerCase()));
+    if(!matches.length)continue;
+    const group=document.createElement("div");group.className="cat-group";
+    const title=document.createElement("div");title.className="cat-title";title.textContent=CAT_NAMES[cat];group.appendChild(title);
+    matches.forEach(([type,name,category])=>{
+      const b=document.createElement("button");b.className="palette-block";b.draggable=true;b.dataset.type=type;
+      b.style.setProperty("--block-color",CAT_COLORS[category]); b.innerHTML=`<span class="palette-dot"></span><span>${name}</span>`;
+      b.addEventListener("dragstart",e=>{e.dataTransfer.setData("text/plain",JSON.stringify({palette:true,type}));});
+      b.addEventListener("click",()=>addBlock(type, 420+Math.random()*160, 220+Math.random()*100));
+      group.appendChild(b);
+    });
+    list.appendChild(group);
+  }
+}
+function blockName(type){for(const items of Object.values(BLOCKS)){const f=items.find(x=>x[0]===type);if(f)return f[1]}return type}
+function blockCategory(type){for(const [cat,items] of Object.entries(BLOCKS)){if(items.some(x=>x[0]===type))return cat}return "events"}
+function blockMarkup(b){
+  const name=blockName(b.type),cat=blockCategory(b.type);
+  const start=b.type==="start";
+  let controls="";
+  if(["setLed","toggleLed","digitalWrite","digitalWrite2","pwm","servo","wait","every","repeat","if","ifElse","setVar","changeVar","serialPrint","serialPrintLine","analogRead","digitalRead"].includes(b.type)){
+    controls=`<div class="block-fields">${fieldFor(b.type)}</div>`;
+  }
+  return `<div class="block ${start?"start-block":""}" data-id="${b.id}" style="--block-color:${CAT_COLORS[cat]};left:${b.x}px;top:${b.y}px">
+    <div class="port port-in"></div>
+    <div class="block-main"><span class="block-grip"></span><span class="block-name">${name}</span>${controls}</div>
+    <div class="port port-out"></div>
+    ${start?"<span class=\"lock-mark\">LOCKED</span>":""}
+  </div>`;
+}
+function fieldFor(type){
+  const sel=(a)=>`<select>${a.map(x=>`<option>${x}</option>`).join("")}</select>`;
+  if(type==="setLed")return `LED ${sel(["ON","OFF"])}`;
+  if(type==="toggleLed")return `LED`;
+  if(type==="digitalWrite"||type==="digitalWrite2")return `Pin <input value="13" size="3"> ${sel(["HIGH","LOW"])}`;
+  if(type==="pwm")return `Pin <input value="9" size="3"> Value <input value="128" size="3">`;
+  if(type==="servo")return `Pin <input value="9" size="3"> Angle <input value="90" size="3">`;
+  if(type==="wait")return `<input value="1" size="3"> second(s)`;
+  if(type==="every")return `Every <input value="1" size="3"> second(s)`;
+  if(type==="repeat")return `${sel(["10","5","25","100"])} times`;
+  if(type==="if"||type==="ifElse")return `condition`;
+  if(type==="setVar"||type==="changeVar")return `<input value="count" size="6"> = <input value="1" size="4">`;
+  if(type==="serialPrint"||type==="serialPrintLine")return `<input value="Hello LoWorks" size="16">`;
+  if(type==="analogRead"||type==="digitalRead")return `Pin <input value="A0" size="4">`;
+  return "";
+}
+function renderWorld(){
+  const world=$("#world");world.innerHTML="";
+  world.style.transform=`translate(${state.panX}px,${state.panY}px) scale(${state.zoom})`;
+  state.blocks.forEach(b=>{
+    const el=document.createElement("div");el.innerHTML=blockMarkup(b);const node=el.firstElementChild;
+    world.appendChild(node);
+    node.addEventListener("pointerdown",startBlockDrag);
+    node.addEventListener("click",e=>{e.stopPropagation();selectBlock(b.id)});
+    node.querySelectorAll("input,select").forEach(x=>x.addEventListener("pointerdown",e=>e.stopPropagation()));
+  });
+  if(!state.blocks.some(b=>b.type==="start")) state.blocks.unshift({id:uid(),type:"start",x:390,y:180,locked:true});
+  updateMinimap();
+}
+function selectBlock(id){state.selected=id;document.querySelectorAll(".block").forEach(x=>x.classList.toggle("selected",x.dataset.id===id));}
+function addBlock(type,x,y){
+  saveHistory(); if(type==="start"){log("START already exists","warning");return}
+  const b={id:uid(),type,x:state.settings.snap?Math.round(x/16)*16:x,y:state.settings.snap?Math.round(y/16)*16:y};
+  state.blocks.push(b);selectBlock(b.id);renderWorld();renderCode();log(`Added ${blockName(type)}`);persistCurrent();
+}
+function removeSelected(){
+  const b=state.blocks.find(x=>x.id===state.selected); if(!b||b.locked)return;
+  saveHistory();state.blocks=state.blocks.filter(x=>x.id!==b.id);state.selected=null;renderWorld();renderCode();log(`Removed ${blockName(b.type)}`);persistCurrent();
+}
+function startBlockDrag(e){
+  if(e.button!==0)return;
+  const node=e.currentTarget,b=state.blocks.find(x=>x.id===node.dataset.id);if(!b)return;
+  selectBlock(b.id);state.dragging={id:b.id,startX:e.clientX,startY:e.clientY,origX:b.x,origY:b.y};
+  node.classList.add("grabbing");node.setPointerCapture(e.pointerId);
+  saveHistory();
+  const move=ev=>{
+    if(!state.dragging)return;
+    const dx=(ev.clientX-state.dragging.startX)/state.zoom,dy=(ev.clientY-state.dragging.startY)/state.zoom;
+    b.x=state.dragging.origX+dx;b.y=state.dragging.origY+dy;
+    if(state.settings.snap){b.x=Math.round(b.x/8)*8;b.y=Math.round(b.y/8)*8}
+    node.style.left=b.x+"px";node.style.top=b.y+"px";showSnapTarget(b);
+  };
+  const up=ev=>{
+    node.releasePointerCapture(e.pointerId);node.classList.remove("grabbing");hideSnapTarget();
+    state.dragging=null;renderWorld();renderCode();log(`Moved ${blockName(b.type)}`);persistCurrent();
+  };
+  node.addEventListener("pointermove",move);node.addEventListener("pointerup",up,{once:true});node.addEventListener("pointercancel",up,{once:true});
+}
+function showSnapTarget(b){
+  document.querySelectorAll(".block").forEach(n=>n.classList.remove("snap-target"));
+  let closest=null,dist=Infinity;
+  state.blocks.forEach(o=>{if(o.id===b.id)return;const d=Math.hypot((o.x-b.x),(o.y+78-b.y));if(d<dist&&d<80){dist=d;closest=o}});
+  if(closest){const n=document.querySelector(`[data-id="${closest.id}"]`);n?.classList.add("snap-target")}
+}
+function hideSnapTarget(){document.querySelectorAll(".block").forEach(n=>n.classList.remove("snap-target"))}
+$("#canvas").addEventListener("dragover",e=>e.preventDefault());
+$("#canvas").addEventListener("drop",e=>{
+  e.preventDefault();let data;try{data=JSON.parse(e.dataTransfer.getData("text/plain"))}catch{return}
+  if(!data.palette)return;
+  const r=$("#canvas").getBoundingClientRect();addBlock(data.type,(e.clientX-r.left-state.panX)/state.zoom,(e.clientY-r.top-state.panY)/state.zoom);
+});
+let panning=null;
+$("#canvas").addEventListener("pointerdown",e=>{
+  if(e.target!==$("#canvas")&&e.target!==$("#world"))return;
+  panning={x:e.clientX,y:e.clientY,px:state.panX,py:state.panY};
+  $("#canvas").setPointerCapture(e.pointerId);
+});
+$("#canvas").addEventListener("pointermove",e=>{if(!panning)return;state.panX=panning.px+e.clientX-panning.x;state.panY=panning.py+e.clientY-panning.y;renderWorld()});
+$("#canvas").addEventListener("pointerup",()=>panning=null);
+$("#canvas").addEventListener("wheel",e=>{if(!e.ctrlKey&&!e.metaKey)return;e.preventDefault();state.zoom=Math.min(1.8,Math.max(.55,state.zoom+(e.deltaY<0?.08:-.08)));applyView();renderWorld()},{passive:false});
+function arrange(){
+  saveHistory();const start=state.blocks.find(b=>b.type==="start")||state.blocks[0];if(!start)return;
+  let x=start.x,y=start.y;state.blocks.forEach((b,i)=>{if(b.id===start.id)return;b.x=x;b.y=y+110*(i);});
+  renderWorld();log("Blocks arranged");persistCurrent();
+}
+function renderCode(){
+  if(!state.settings.showCode){$("#codePanel").classList.add("collapsed");return}
+  $("#codePanel").classList.remove("collapsed");
+  const board=BOARDS[state.board];
+  let code="";
+  if(state.board==="unoR4WiFi"){
+    code=`// Generated by LoWorks\\n// Board: ${board.name}\\n\\nvoid setup() {\\n  pinMode(LED_BUILTIN, OUTPUT);\\n  Serial.begin(115200);\\n}\\n\\nvoid loop() {`;
+    state.blocks.filter(b=>b.type!=="start").forEach(b=>{code+="\\n  "+arduinoLine(b);});
+    code+="\\n}\\n";
+  }else{
+    code=`# Generated by LoWorks\\n# Board: ${board.name}\\n\\nfrom machine import Pin, PWM, ADC\\nfrom time import sleep\\n\\nled = Pin("LED", Pin.OUT)\\n\\nwhile True:`;
+    state.blocks.filter(b=>b.type!=="start").forEach(b=>{code+="\\n    "+pythonLine(b);});
+    code+="\\n";
+  }
+  $("#codeOutput").textContent=code;
+}
+function arduinoLine(b){
+  switch(b.type){
+    case"setLed":return"digitalWrite(LED_BUILTIN, HIGH);";
+    case"toggleLed":return"digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));";
+    case"wait":return"delay(1000);";
+    case"serialPrint":return'Serial.print("Hello LoWorks");';
+    case"serialPrintLine":return'Serial.println("Hello LoWorks");';
+    case"digitalWrite":case"digitalWrite2":return"digitalWrite(13, HIGH);";
+    case"pwm":case"analogWrite":return"analogWrite(9, 128);";
+    case"tone":return"tone(8, 440);";
+    case"stopTone":return"noTone(8);";
+    case"togglePin":return"digitalWrite(13, !digitalRead(13));";
+    case"servo":return"// SET SERVO: attach and write angle";
+    case"if":return"if (true) { /* condition */ }";
+    case"ifElse":return"if (true) { /* yes */ } else { /* no */ }";
+    case"repeat":return"for (int i = 0; i < 10; i++) { /* repeat */ }";
+    default:return`// ${blockName(b.type)}`;
+  }
+}
+function pythonLine(b){
+  switch(b.type){
+    case"setLed":return"led.value(1)";
+    case"toggleLed":return"led.toggle()";
+    case"wait":return"sleep(1)";
+    case"serialPrint":case"serialPrintLine":return'print("Hello LoWorks")';
+    case"digitalWrite":case"digitalWrite2":return"Pin(13, Pin.OUT).value(1)";
+    case"pwm":case"analogWrite":return"PWM(Pin(15)).duty_u16(32768)";
+    case"if":return"if True:  # condition";
+    case"ifElse":return"if True:  # yes / else branch";
+    case"repeat":return"for _ in range(10):  # repeat";
+    default:return`# ${blockName(b.type)}`;
+  }
+}
+function renderLogs(){
+  const el=$("#logs");el.innerHTML="";
+  if(!state.logs.length){el.innerHTML=`<div class="empty-logs">No activity yet.</div>`;return}
+  state.logs.slice(-80).reverse().forEach(l=>{const row=document.createElement("div");row.className=`log ${l.type}`;row.innerHTML=`<span>${l.time}</span><b>${l.msg}</b>`;el.appendChild(row)});
+}
+function updateMinimap(){
+  const m=$("#minimap");m.innerHTML="";
+  state.blocks.forEach(b=>{const d=document.createElement("i");d.style.left=(b.x/10)+"px";d.style.top=(b.y/10)+"px";d.style.background=CAT_COLORS[blockCategory(b.type)];m.appendChild(d)});
+}
+function renderProjectCards(){
+  const wrap=$("#projectCards"),all=JSON.parse(localStorage.getItem("loworksProjects")||"{}");
+  const projects=Object.values(all).sort((a,b)=>b.updated-a.updated);
+  wrap.innerHTML="";
+  if(!projects.length){wrap.innerHTML=`<div class="empty-projects">Your projects will appear here.</div>`;return}
+  projects.forEach(p=>{
+    const c=document.createElement("div");c.className="project-card";
+    c.innerHTML=`<div class="project-symbol">LW</div><div class="project-info"><strong>${escapeHtml(p.name)}</strong><small>${BOARDS[p.board]?.short||p.board} · ${new Date(p.updated).toLocaleDateString()}</small></div><button class="open-card">Open</button>`;
+    c.querySelector(".open-card").onclick=()=>loadProject(p.id);wrap.appendChild(c);
+  });
+}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
+function loadProject(id){
+  const p=(JSON.parse(localStorage.getItem("loworksProjects")||"{}"))[id];if(!p)return;
+  state.projectId=p.id;state.projectName=p.name;state.board=p.board;state.blocks=p.blocks||[{id:uid(),type:"start",x:390,y:180,locked:true}];state.notes=p.notes||"";state.logs=[];state.selected=null;log("Project loaded");openWorkspace();
+}
+function exportProject(){
+  const data={version:1,name:state.projectName,board:state.board,blocks:state.blocks,notes:state.notes};
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:"application/json"}));a.download=state.projectName.replace(/\W+/g,"_")+".loworks.json";a.click();URL.revokeObjectURL(a.href);
+}
+function importProject(file){
+  const r=new FileReader();r.onload=()=>{try{const p=JSON.parse(r.result);state.projectId=uid();state.projectName=p.name||"Imported Project";state.board=p.board||"unoR4WiFi";state.blocks=p.blocks||[{id:uid(),type:"start",x:390,y:180,locked:true}];state.notes=p.notes||"";persistCurrent();log("Project imported");openWorkspace()}catch{alert("That file is not a valid LoWorks project.")}};r.readAsText(file);
+}
+
+$("#createProject").onclick=()=>freshProject();
+$("#newProjectBtn").onclick=()=>freshProject();
+$("#openProject").onclick=()=>$("#projectFile").click();
+$("#projectFile").onchange=e=>e.target.files[0]&&importProject(e.target.files[0]);
+$("#importProject").onclick=()=>$("#projectFile").click();
+$("#exportProject").onclick=exportProject;
+$("#backToLibraryBtn").onclick=()=>{persistCurrent();state.view="library";$("#mainView").classList.add("hidden");$("#libraryView").classList.remove("hidden");renderProjectCards()};
+$("#librarySearch").oninput=e=>renderCategories(e.target.value);
+$("#projectName").onchange=e=>{state.projectName=e.target.value.trim()||"Untitled Project";persistCurrent();log("Project renamed")};
+$("#copyBtn").onclick=async()=>{
+  const code=$("#codeOutput").textContent;
+  try{await navigator.clipboard.writeText(code);$("#copyBtn").classList.add("copied");$("#copyBtn span:last-child").textContent="Copied";setTimeout(()=>{$("#copyBtn").classList.remove("copied");$("#copyBtn span:last-child").textContent="Copy Code"},1400);log("Generated code copied")}catch{log("Clipboard permission denied","warning")}
+};
+$("#zoomInBtn").onclick=()=>{state.zoom=Math.min(1.8,state.zoom+.1);applyView();renderWorld()};
+$("#zoomOutBtn").onclick=()=>{state.zoom=Math.max(.55,state.zoom-.1);applyView();renderWorld()};
+$("#centerBtn").onclick=()=>{state.panX=0;state.panY=0;applyView();renderWorld();log("Workspace centered")};
+$("#gridBtn").onclick=()=>{state.grid=!state.grid;applyView();log(state.grid?"Grid enabled":"Grid disabled")};
+$("#arrangeBtn").onclick=arrange;
+$("#undoBtn").onclick=()=>{if(!state.history.length)return;state.future.push(JSON.stringify(state.blocks));state.blocks=JSON.parse(state.history.pop());renderWorld();renderCode();log("Undo")};
+$("#redoBtn").onclick=()=>{if(!state.future.length)return;state.history.push(JSON.stringify(state.blocks));state.blocks=JSON.parse(state.future.pop());renderWorld();renderCode();log("Redo")};
+$("#clearLogsBtn").onclick=()=>{state.logs=[];renderLogs()};
+$("#closeCodeBtn").onclick=()=>$("#codePanel").classList.add("collapsed");
+$("#noteBtn").onclick=()=>{$("#notebook").classList.remove("hidden");$("#notebookText").value=state.notes;requestAnimationFrame(()=>$("#notebook").classList.add("open"))};
+$("#closeNotebook").onclick=()=>{$("#notebook").classList.remove("open");setTimeout(()=>$("#notebook").classList.add("hidden"),180)};
+$("#notebookText").oninput=e=>{state.notes=e.target.value;persistCurrent()};
+$("#settingsBtn").onclick=()=>{$("#settingsModal").classList.remove("hidden");requestAnimationFrame(()=>$("#settingsModal").classList.add("open"));};
+$("#closeSettings").onclick=()=>{$("#settingsModal").classList.remove("open");setTimeout(()=>$("#settingsModal").classList.add("hidden"),180)};
+$("#settingsModal").onclick=e=>{if(e.target===e.currentTarget)$("#closeSettings").click()};
+$("#showCodeSetting").onchange=e=>{state.settings.showCode=e.target.checked;renderCode()};
+$("#autosaveSetting").onchange=e=>{state.settings.autosave=e.target.checked};
+$("#snapSetting").onchange=e=>{state.settings.snap=e.target.checked};
+$("#motionSetting").onchange=e=>{state.settings.reducedMotion=e.target.checked;applyView()};
+window.addEventListener("keydown",e=>{
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="s"){e.preventDefault();persistCurrent();log("Project saved")}
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="z"){e.preventDefault();$("#undoBtn").click()}
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="y"){e.preventDefault();$("#redoBtn").click()}
+  if(e.key==="Delete"&&!["INPUT","TEXTAREA","SELECT"].includes(document.activeElement.tagName))removeSelected();
+  if(e.key==="Escape"){$("#closeSettings").click();$("#closeNotebook").click()}
+});
+document.body.addEventListener("keydown",e=>{
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="d"&&state.selected){e.preventDefault();const b=state.blocks.find(x=>x.id===state.selected);if(b&&!b.locked){saveHistory();const n={...b,id:uid(),x:b.x+28,y:b.y+28};state.blocks.push(n);selectBlock(n.id);renderWorld();log(`Duplicated ${blockName(b.type)}`)}}
+});
+renderProjectCards();
+</script>
+</body>
+</html>
